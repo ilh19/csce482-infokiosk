@@ -1,0 +1,31 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:awe="http://schemas.awesomium.com/winfx"
+	x:Class="WpfApplication1.MainWindow"
+	x:Name="Window"
+	Title="MainWindow"
+	Width="640" Height="480" Loaded="Window_Loaded">
+
+    <Grid x:Name="LayoutRoot">
+
+        <Canvas x:Name="canvas" IsManipulationEnabled="True">
+            <Ellipse x:Name="circle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="74" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="-336" Canvas.Top="85" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
+                <Ellipse.RenderTransform>
+                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <TextBlock x:Name="textbox" Height="44" Margin="29,0,140,35" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
+        </Canvas>
+
+
+        <WrapPanel Height="350" Width="525">
+            <Grid>
+                <awe:WebControl Name="webControl" Source="http://m.tamu.edu" Margin="1,0,-1,0" />
+            </Grid>
+            <WrapPanel.RenderTransform>
+                <MatrixTransform Matrix="1.5,0.5,-0.5,1.5,564,79" />
+            </WrapPanel.RenderTransform>
+        </WrapPanel>
+    </Grid>
+</Window>
