@@ -6,11 +6,16 @@
 	x:Class="WpfApplication1.MainWindow"
 	x:Name="Window"
 	Title="MainWindow"
-	Width="640" Height="480" Loaded="Window_Loaded">
+	Width="1600" Height="1200" Loaded="Window_Loaded"
+    WindowStyle="None"  WindowState="Maximized" Topmost="True" Cursor="None">
 
     <Grid x:Name="LayoutRoot">
+        <Grid.Background>
+                <ImageBrush ImageSource="Images/background.jpg"/>
+        </Grid.Background>
         <Canvas x:Name="canvas" IsManipulationEnabled="True">
-            <Ellipse x:Name="circle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="74" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="-336" Canvas.Top="85" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
+
+            <Ellipse x:Name="circle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="74" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="-37" Canvas.Top="187" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
                 <Ellipse.RenderTransform>
                     <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
                 </Ellipse.RenderTransform>
