@@ -146,27 +146,89 @@ namespace WpfApplication1
 
             WrapPanel window = new WrapPanel();
             window.Height = 300;
-            window.Width = 320;
+            window.Width = 250;
             window.IsManipulationEnabled = true;
             window.Background = Brushes.LightSlateGray;
+            window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+            window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
+            window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
+            window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
+            window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
+            canvas.Children.Add(window);
+
             Grid grid = new Grid();
+            window.Children.Add(grid);
+
+            Ellipse leftTab = new Ellipse();
+            leftTab.Name = "LeftTab";
+            leftTab.AddHandler(Ellipse.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
+            leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -125, 0);
+            leftTab.Height = 70;
+            leftTab.Width = 70;
+            leftTab.Fill = Brushes.LightSlateGray;
+            grid.Children.Add(leftTab);
+
+            Ellipse rightTab = new Ellipse();
+            rightTab.Name = "RightTab";
+            rightTab.AddHandler(Ellipse.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
+            rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 125, 0);
+            rightTab.Height = 70;
+            rightTab.Width = 70;
+            rightTab.Fill = Brushes.LightSlateGray;
+            grid.Children.Add(rightTab);
+
+            Rectangle closeTab = new Rectangle();
+            closeTab.Name = "CloseTab";
+            closeTab.AddHandler(Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
+            closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 105, -155);
+            closeTab.Height = 25;
+            closeTab.Width = 40;
+            closeTab.Fill = Brushes.LightSlateGray;
+            grid.Children.Add(closeTab);
+
+            Rectangle restoreTab = new Rectangle();
+            restoreTab.Name = "RestoreTab";
+            restoreTab.AddHandler(Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
+            restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 65, -155);
+            restoreTab.Height = 25;
+            restoreTab.Width = 40;
+            restoreTab.Fill = Brushes.LightSlateGray;
+            grid.Children.Add(restoreTab);
+
             WebControl webControl = new WebControl();
             webControl.Name = "webControl";
             webControl.Source = new Uri("http://m.tamu.edu");
             webControl.Margin = new Thickness(0, 0, 0, 0);
             webControl.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             webControl.Width = 250;
-            webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 35, 0);
+            webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             grid.Children.Add(webControl);
-            window.Children.Add(grid);
-            window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
-            window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
-            window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
-            window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
-            window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
+        }
+
+        private void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
+        {
+
+        }
+
+        private void RightTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
+        {
+
+        }
+
+        private void CloseTabTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
+        {            
+            ((((sender as Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
+                    (((sender as Rectangle).Parent as Grid).Parent as WrapPanel));
+        }
 
 
-            canvas.Children.Add(window);
+        /// <summary>
+        /// Should restore the original size of the window to the default size...having issues. -VG
+        /// </summary>
+        private void RestoreTabTouchDown(object sender, EventArgs e)
+        {
+            (((sender as Rectangle).Parent as Grid).Parent as WrapPanel).Height = 300;
+            (((sender as Rectangle).Parent as Grid).Parent as WrapPanel).Width = 250;
         }
 
         private void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
@@ -234,7 +296,7 @@ namespace WpfApplication1
             e.TranslationBehavior = new InertiaTranslationBehavior()
             {
                 InitialVelocity = e.InitialVelocities.LinearVelocity,
-                DesiredDeceleration = 10.0 * 96.0 / (1000.0 * 1000.0)
+                DesiredDeceleration = 7.0 * 96.0 / (1000.0 * 1000.0)
             };
 
             // Decrease the velocity of the Rectangle's resizing by 
