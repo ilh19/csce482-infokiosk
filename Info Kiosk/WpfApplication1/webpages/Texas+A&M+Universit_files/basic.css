@@ -1,0 +1,99 @@
+BODY {
+	PADDING-BOTTOM: 0px; BACKGROUND-COLOR: white; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 100%; PADDING-RIGHT: 0px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; COLOR: black; PADDING-TOP: 0px
+}
+H1 {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 7px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; MARGIN-BOTTOM: 0px; FONT-WEIGHT: bold
+}
+H2 {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 7px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; MARGIN-BOTTOM: 0px; FONT-WEIGHT: bold
+}
+H3 {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 7px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; MARGIN-BOTTOM: 0px; FONT-WEIGHT: bold
+}
+H4 {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 7px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; MARGIN-BOTTOM: 0px; FONT-WEIGHT: bold
+}
+H5 {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 7px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; MARGIN-BOTTOM: 0px; FONT-WEIGHT: bold
+}
+H6 {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 7px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; MARGIN-BOTTOM: 0px; FONT-WEIGHT: bold
+}
+H1 {
+	FONT-SIZE: 130%
+}
+H2 {
+	FONT-SIZE: 120%
+}
+H3 {
+	FONT-SIZE: 110%
+}
+H4 {
+	FONT-SIZE: 100%
+}
+A IMG {
+	BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; OUTLINE-STYLE: none; OUTLINE-COLOR: invert; OUTLINE-WIDTH: medium; BORDER-TOP: medium none; BORDER-RIGHT: medium none
+}
+.hidden {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.printMe {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.printme {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.small {
+	FONT-SIZE: 80%
+}
+.large {
+	FONT-SIZE: 120%
+}
+.larger {
+	FONT-SIZE: 150%
+}
+.center {
+	TEXT-ALIGN: center; MARGIN: auto
+}
+.centered {
+	TEXT-ALIGN: center; MARGIN: auto
+}
+.clear {
+	CLEAR: both
+}
+.spacer {
+	CLEAR: both
+}
+.bold {
+	FONT-WEIGHT: bold
+}
+.italic {
+	FONT-STYLE: italic
+}
+.italics {
+	FONT-STYLE: italic
+}
+.underline {
+	TEXT-DECORATION: underline
+}
+.underlined {
+	TEXT-DECORATION: underline
+}
+.alignRight {
+	TEXT-ALIGN: right
+}
+.right {
+	TEXT-ALIGN: right
+}
+.alignLeft {
+	TEXT-ALIGN: left
+}
+.indent {
+	PADDING-LEFT: 30px
+}
+.spacedList > LI {
+	MARGIN-BOTTOM: 0.66em
+}
+.nowrap {
+	WHITE-SPACE: nowrap
+}
