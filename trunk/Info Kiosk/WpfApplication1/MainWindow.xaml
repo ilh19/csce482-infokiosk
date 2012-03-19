@@ -15,7 +15,7 @@
                 <ImageBrush ImageSource="Images/background.jpg"/>
         </Grid.Background>
         <Canvas x:Name="canvas" IsManipulationEnabled="True">
-
+            
             <Ellipse x:Name="weather" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="148" Canvas.Top="320" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
                 <Ellipse.RenderTransform>
                     <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
