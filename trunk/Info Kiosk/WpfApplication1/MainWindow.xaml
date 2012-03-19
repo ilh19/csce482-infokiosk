@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:s="http://schemas.microsoft.com/surface/2008"
     xmlns:awe="http://schemas.awesomium.com/winfx"
+    xmlns:local="clr-namespace:WpfApplication1"
 	x:Class="WpfApplication1.MainWindow"
 	x:Name="Window"
 	Title="MainWindow"
@@ -15,11 +16,27 @@
         </Grid.Background>
         <Canvas x:Name="canvas" IsManipulationEnabled="True">
 
-            <Ellipse x:Name="circle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="74" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="-37" Canvas.Top="187" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
+            <Ellipse x:Name="weather" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="148" Canvas.Top="320" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
                 <Ellipse.RenderTransform>
                     <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
                 </Ellipse.RenderTransform>
             </Ellipse>
+            <Ellipse x:Name="transit" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="148" Canvas.Top="500" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
+                <Ellipse.RenderTransform>
+                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Ellipse x:Name="map" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="238" Canvas.Top="410" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
+                <Ellipse.RenderTransform>
+                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Ellipse x:Name="dining" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="58" Canvas.Top="410" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
+                <Ellipse.RenderTransform>
+                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <!-- <local:GifImage x:Name="testAnimation" Height="84" Canvas.Left="29" Canvas.Top="214" Width="81" /> -->
             <TextBlock x:Name="textbox" Height="44" Margin="29,0,140,35" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
         </Canvas>
     </Grid>

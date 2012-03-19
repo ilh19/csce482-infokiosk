@@ -26,6 +26,8 @@ namespace WpfApplication1
     public partial class MainWindow : Window
     {
 
+        public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
+
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -47,8 +49,10 @@ namespace WpfApplication1
 
         public MainWindow()
         {
+           // this.InitializeComponent();
             this.InitializeComponent();
-
+            //testAnimation.GifSource = "/Images/earth.gif";
+            //testAnimation.Show();
             // Insert code required on object creation below this point.
         }
 
@@ -100,7 +104,7 @@ namespace WpfApplication1
             this.ManipulationBoundaryFeedback += new EventHandler<ManipulationBoundaryFeedbackEventArgs>(rect2_ManipulationBoundaryFeedback);
 
             //Optional 
-            circle.ManipulationCompleted += new EventHandler<ManipulationCompletedEventArgs>(rect2_ManipulationCompleted);
+            //circle.ManipulationCompleted += new EventHandler<ManipulationCompletedEventArgs>(rect2_ManipulationCompleted);
         }
 
         void rect2_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
@@ -163,8 +167,8 @@ namespace WpfApplication1
             leftTab.Name = "LeftTab";
             leftTab.AddHandler(Ellipse.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
             leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -125, 0);
-            leftTab.Height = 70;
-            leftTab.Width = 70;
+            leftTab.Height = 75;
+            leftTab.Width = 75;
             leftTab.Fill = Brushes.LightSlateGray;
             grid.Children.Add(leftTab);
 
@@ -172,8 +176,8 @@ namespace WpfApplication1
             rightTab.Name = "RightTab";
             rightTab.AddHandler(Ellipse.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
             rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 125, 0);
-            rightTab.Height = 70;
-            rightTab.Width = 70;
+            rightTab.Height = 75;
+            rightTab.Width = 75;
             rightTab.Fill = Brushes.LightSlateGray;
             grid.Children.Add(rightTab);
 
@@ -197,12 +201,43 @@ namespace WpfApplication1
 
             WebControl webControl = new WebControl();
             webControl.Name = "webControl";
-            webControl.Source = new Uri("http://m.tamu.edu");
+
+            if ((sender as Ellipse).Name == "map")
+            {
+                webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\maps.htm");
+            }
+            else if ((sender as Ellipse).Name == "transit")
+            {
+                webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.html");
+            }
+            else if ((sender as Ellipse).Name == "weather")
+            {
+                webControl.Source = new Uri("http://theshinyspoonpay.appspot.com");
+            }
+            else if ((sender as Ellipse).Name == "dining")
+            {
+                webControl.Source = new Uri("http://m.tamu.edu/dining");
+            }
+            else
+            {
+                //webControl.Source = new Uri("http://www.bing.com/search?q=" + sender);
+                webControl.Source = new Uri("http://m.tamu.edu/");
+            }
+
+
+            //webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.htm");
+
+
+
+
             webControl.Margin = new Thickness(0, 0, 0, 0);
             webControl.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             webControl.Width = 250;
             webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             grid.Children.Add(webControl);
+            //theshinyspoonpay.appspot.com - weather
+            //C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\maps.htm
+            //http://m.tamu.edu/dining
         }
 
         private void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)

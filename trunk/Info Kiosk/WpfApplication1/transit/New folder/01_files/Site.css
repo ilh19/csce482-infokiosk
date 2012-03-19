@@ -1,0 +1,319 @@
+﻿body
+{
+    font-family: "Gill Sans" , "Gill Sans MT" , "Trebuchet MS" , Geneva, Verdana, Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    width:100%;
+    background-color:#332C2c;
+}
+
+h1, h2, h3
+{
+    padding: 0;
+    margin: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+a, a:visited
+{
+    font-size: .9em;
+    font-weight:bold;
+    text-decoration: none;
+    color: Black;
+}
+
+a:active, a:hover
+{
+    font-size: .9em;
+    font-weight:bold;
+    text-decoration: underline;
+    color: Black;
+}
+
+#pagewrapper
+{
+    margin:auto;
+    width:484px;
+    padding:0;
+    background-color:White;
+}
+
+div.warning
+{
+    font-size: large;
+    color: Red;
+}
+
+.highlight
+{
+    /*background-color: #FFF2D4;*/
+}
+
+#printedPageDisclaimer
+{
+    /* Default the disclaimer to off.  Print stylesheet will enable. */
+    display: none;
+    font-size: smaller;
+}
+
+/****** Google Map ******/
+#map_canvas
+{
+    width: 484px;
+    height: 225px;
+    margin-bottom: .5em;
+}
+
+#map_canvas img[src*="busSilhouette"]
+{
+    /* change background color of bus images from transparent to white.*/
+    background-color: White;
+}
+
+a img
+{
+    border: thin solid transparent;
+}
+a:hover img
+{
+    border-color: inherit;
+}
+
+h3 a, h3 a:visited
+{
+    font-size: 1.2em;
+    text-decoration: none;
+    color: Black;
+}
+
+h3 a:active, h3 a:hover
+{
+    font-size: 1.2em;
+    text-decoration: underline;
+    color: Black;
+}
+
+/****** Routes ******/
+#OnCampus h3, #OffCampus h3
+{
+    background-color: #EDDD9E;
+}
+
+#OffCampusLinks li, #OnCampusLinks li
+{
+    list-style: none;
+}
+
+#OffCampusLinks li a, #OnCampusLinks li a
+{
+    color: #500000;
+    text-decoration: none;
+}
+#OffCampusLinks li a:hover, #OnCampusLinks li a:hover
+{
+    text-decoration: underline;
+}
+
+#Route
+{
+    margin-top: 1em;
+    font-size: 1.5em;
+}
+
+#Route span.RouteNumber
+{
+    color: #500000;
+    font-size: larger;
+}
+#Route span.RouteName
+{
+    background-color: #500000;
+    color: White;
+    padding: .5em;
+}
+
+/****** Timetables ******/
+#maptimes
+{
+    margin-top: 0;
+}
+
+table.timetable
+{
+    border: 5px solid #D3Bf96;
+    margin: 1em 1em 1em 0;
+    border-collapse: collapse;
+    font-size: .8em;
+    background-color:White;
+}
+
+table.timetable caption
+{
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: left;
+}
+
+table.timetable tr
+{
+    /*border: thin solid white;*/
+    text-align: center;
+}
+
+table.timetable thead th.colEven, table.timetable th.colEven, table.timetable thead th.colOdd, table.timetable th.colOdd
+{
+    background-color: #500000;
+    color: White;
+    padding: .5em 1em;
+    text-align: center;
+}
+
+table.timetable thead th.leave, table.timetable th.leave
+{
+    text-align: left;
+    padding: 0.5em 1em;
+    background-color: #D3Bf96;
+    color: black;
+    font-size: larger;
+    font-family: Sans-Serif;
+    font-weight: bold;
+}
+
+table.timetable thead th.arrive, table.timetable th.arrive
+{
+    background-color: White;
+    color: black;
+    font-size: larger;
+    font-family: Sans-Serif;
+    font-weight: bold;
+}
+
+table.timetable tr.oddRow
+{
+    /* default for browsers with JavaScript disabled */
+    background-color: #D3Bf96;
+}
+
+table.timetable tr td.PastLeaveTime
+{
+    color: gray;
+    font-style: italic;
+}
+
+table.timetable tr.PastLeaveTime
+{
+    /* This class is used by javascript to quickly identify rows of leave times that are expired */ /* display: none; */
+}
+
+table.timetable tr td.FutureLeaveTime
+{
+}
+
+#timetableList
+{
+    visibility: hidden;
+}
+
+.hidetimescheck /* hide/show leavetimes checkbox */
+{
+    position: relative;
+    left: 11em;
+    top: -2.85em;
+    font-size: .8em;
+}
+
+
+/****** Announcements ******/
+
+#announcements
+{
+    color: White;
+}
+
+#announcements h3
+{
+    background-color: #500000;
+}
+
+.announcement
+{
+    padding-left: .5em;
+}
+
+.announcement a, .announcement a:visited
+{
+    color: Black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: .8em;
+    padding-bottom: .2em;
+}
+
+.announcement a:hover, .announcement a:active
+{
+    color: Black;
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: .8em;
+    padding-bottom: .2em;
+}
+
+#servicedates
+{
+    color: White;
+}
+#servicedates h3
+{
+    background-color: #500000;
+}
+
+#twitter
+{
+    background-color:#CCCCCC;
+    padding:0 5px 0 5px;
+    font-size:.9em;
+}
+
+/****** Header/Footer ******/
+
+.header
+{
+    background-color:#500000;
+    color:White;
+    padding:0;
+    
+}
+
+.header h3
+{
+    display:inline;
+    font-size:1.5em;
+    margin-bottom:.5em;
+    vertical-align:top;
+}
+
+.header img
+{
+    
+    padding: 3px 10px 2px 2px;
+}
+
+#footer
+{
+    border-top: 5px solid #500000;
+    margin-top:10px;
+    clear:both;
+    background-color:#332C2c;
+    color:White;
+    text-align:center;
+    font-weight:normal;
+    font-size:.8em;
+}
+
+#footer a, #footer a:visited, #footer a:active, #footer a:hover
+{
+   color:White;
+}
+
+
