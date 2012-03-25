@@ -27,6 +27,7 @@ namespace WpfApplication1
     {
 
         public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
+        private Dictionary<UIElement, int> movingGifImage = new Dictionary<UIElement, int>();
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -36,14 +37,12 @@ namespace WpfApplication1
 
         }
 
-        private Dictionary<UIElement, int> movingEllipses = new Dictionary<UIElement, int>();
-
-        public Ellipse DeepCopy(Ellipse element)
+        public GifImage DeepCopy(GifImage element)
         {
             string shapestring = XamlWriter.Save(element);
             StringReader stringReader = new StringReader(shapestring);
             XmlTextReader xmlTextReader = new XmlTextReader(stringReader);
-            Ellipse DeepCopyobject = (Ellipse)XamlReader.Load(xmlTextReader);
+            GifImage DeepCopyobject = (GifImage)XamlReader.Load(xmlTextReader);
             return DeepCopyobject;
         }
 
@@ -51,8 +50,10 @@ namespace WpfApplication1
         {
            // this.InitializeComponent();
             this.InitializeComponent();
-            //testAnimation.GifSource = "/Images/earth.gif";
-            //testAnimation.Show();
+            weather.GifSource = "/Images/earth.gif";
+            map.GifSource = "/Images/earth.gif";
+            transit.GifSource = "/Images/earth.gif";
+            dining.GifSource = "/Images/earth.gif";
             // Insert code required on object creation below this point.
         }
 
@@ -88,7 +89,8 @@ namespace WpfApplication1
                 //Translation (pan) 
                 matrix.Translate(e.DeltaManipulation.Translation.X, e.DeltaManipulation.Translation.Y);
 
-                ((MatrixTransform)element.RenderTransform).Matrix = matrix;
+                //((MatrixTransform)element.RenderTransform).Matrix = matrix;
+                element.RenderTransform = new MatrixTransform(matrix);
 
                 e.Handled = true;
 
@@ -117,35 +119,32 @@ namespace WpfApplication1
             System.Diagnostics.Debug.WriteLine("Mani boundary " + e.BoundaryFeedback.Translation.ToString());
         }
 
-        private void circle_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
+        private void gifImage_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
-            if (movingEllipses.ContainsKey((Ellipse)sender) == false)
+            if (movingGifImage.ContainsKey((GifImage)sender) == false)
             {
+                GlobalVariables.gifCopy = new GifImage();
+                GlobalVariables.gifCopy = DeepCopy((GifImage)sender);
 
-                GlobalVariables.circleCopy = new Ellipse();
-                GlobalVariables.circleCopy = DeepCopy((Ellipse)sender);
+                GlobalVariables.gifCopy.ManipulationDelta += circle_ManipulationDelta;
+                GlobalVariables.gifCopy.ManipulationStarting += circle_ManipulationStarting;
+                GlobalVariables.gifCopy.TouchDown += gifImage_TouchDown;
+                GlobalVariables.gifCopy.TouchUp += gifImage_TouchUp;
+                GlobalVariables.gifCopy.Loaded += Window_Loaded;
 
-                GlobalVariables.trueCircle = GlobalVariables.circleCopy;
-
-                GlobalVariables.circleCopy.ManipulationDelta += circle_ManipulationDelta;
-                GlobalVariables.circleCopy.ManipulationStarting += circle_ManipulationStarting;
-                GlobalVariables.circleCopy.TouchDown += circle_TouchDown;
-                GlobalVariables.circleCopy.TouchUp += circle_TouchUp;
-                GlobalVariables.circleCopy.Loaded += Window_Loaded;
-
-                movingEllipses[(Ellipse)sender] = e.TouchDevice.Id;
-                canvas.Children.Add(GlobalVariables.circleCopy);
+                movingGifImage[(GifImage)sender] = e.TouchDevice.Id;
+                canvas.Children.Add(GlobalVariables.gifCopy);
             }
         }
 
-        private void circle_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
+        private void gifImage_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
         {
             // TODO: Add event handler implementation here.
 
-            if (movingEllipses.ContainsKey((Ellipse)sender))
+            if (movingGifImage.ContainsKey((GifImage)sender))
             {
-                canvas.Children.Remove((Ellipse)sender);
-                movingEllipses.Remove((Ellipse)sender);
+                canvas.Children.Remove((GifImage)sender);
+                movingGifImage.Remove((GifImage)sender);
             }
 
             WrapPanel window = new WrapPanel();
@@ -202,19 +201,19 @@ namespace WpfApplication1
             WebControl webControl = new WebControl();
             webControl.Name = "webControl";
 
-            if ((sender as Ellipse).Name == "map")
+            if ((sender as GifImage).Name == "map")
             {
                 webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\maps.htm");
             }
-            else if ((sender as Ellipse).Name == "transit")
+            else if ((sender as GifImage).Name == "transit")
             {
                 webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.html");
             }
-            else if ((sender as Ellipse).Name == "weather")
+            else if ((sender as GifImage).Name == "weather")
             {
                 webControl.Source = new Uri("http://theshinyspoonpay.appspot.com");
             }
-            else if ((sender as Ellipse).Name == "dining")
+            else if ((sender as GifImage).Name == "dining")
             {
                 webControl.Source = new Uri("http://m.tamu.edu/dining");
             }
@@ -235,9 +234,6 @@ namespace WpfApplication1
             webControl.Width = 250;
             webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             grid.Children.Add(webControl);
-            //theshinyspoonpay.appspot.com - weather
-            //C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\maps.htm
-            //http://m.tamu.edu/dining
         }
 
         private void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
