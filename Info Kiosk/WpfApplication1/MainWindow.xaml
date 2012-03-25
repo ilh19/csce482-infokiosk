@@ -8,35 +8,18 @@
 	x:Name="Window"
 	Title="MainWindow"
 	Width="1600" Height="1200" Loaded="Window_Loaded"
-    WindowStyle="None"  WindowState="Maximized" Topmost="True" Cursor="None">
+    WindowStyle="None" WindowState="Maximized" Topmost="True" Cursor="None">
 
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
                 <ImageBrush ImageSource="Images/background.jpg"/>
         </Grid.Background>
         <Canvas x:Name="canvas" IsManipulationEnabled="True">
-            
-            <Ellipse x:Name="weather" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="148" Canvas.Top="320" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
-                <Ellipse.RenderTransform>
-                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
-                </Ellipse.RenderTransform>
-            </Ellipse>
-            <Ellipse x:Name="transit" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="148" Canvas.Top="500" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
-                <Ellipse.RenderTransform>
-                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
-                </Ellipse.RenderTransform>
-            </Ellipse>
-            <Ellipse x:Name="map" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="238" Canvas.Top="410" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
-                <Ellipse.RenderTransform>
-                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
-                </Ellipse.RenderTransform>
-            </Ellipse>
-            <Ellipse x:Name="dining" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="70" Stroke="Black" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="circle_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="58" Canvas.Top="410" IsManipulationEnabled="True"  TouchUp="circle_TouchUp">
-                <Ellipse.RenderTransform>
-                    <MatrixTransform Matrix="1.5929750047527,0.585411309251951,-0.585411309251951,1.5929750047527,564.691807426081,79.4658072348299"/>
-                </Ellipse.RenderTransform>
-            </Ellipse>
-            <!-- <local:GifImage x:Name="testAnimation" Height="84" Canvas.Left="29" Canvas.Top="214" Width="81" /> -->
+
+            <local:GifImage x:Name="weather"  HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="435" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
+            <local:GifImage x:Name="transit"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="615" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
+            <local:GifImage x:Name="map"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="845" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
+            <local:GifImage x:Name="dining" HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="665" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <TextBlock x:Name="textbox" Height="44" Margin="29,0,140,35" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
         </Canvas>
     </Grid>

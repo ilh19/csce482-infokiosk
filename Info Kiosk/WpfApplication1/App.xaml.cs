@@ -14,8 +14,7 @@ namespace WpfApplication1
 
     public static class GlobalVariables
     {
-        public static Ellipse circleCopy;
-        public static Ellipse trueCircle;
+        public static GifImage gifCopy;
     }
     public partial class App : Application
     {

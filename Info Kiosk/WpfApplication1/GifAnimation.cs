@@ -68,6 +68,8 @@ namespace WpfApplication1
             _animation.RepeatBehavior = RepeatBehavior.Forever;
             this.Source = _gifDecoder.Frames[0];
             _isInitialized = true;
+
+            Show();
         }
 
         public void Show()
