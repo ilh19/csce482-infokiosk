@@ -67,8 +67,8 @@ public class GraphicsDeviceService : IGraphicsDeviceService
 
         // since we're using render targets anyway, the 
         // backbuffer size is somewhat irrelevant
-        parameters.BackBufferWidth = 480;
-        parameters.BackBufferHeight = 320;
+        parameters.BackBufferWidth = 1600;
+        parameters.BackBufferHeight = 1200;
         parameters.BackBufferFormat = SurfaceFormat.Color;
         parameters.DeviceWindowHandle = windowHandle;
         parameters.DepthStencilFormat = DepthFormat.Depth24Stencil8;
