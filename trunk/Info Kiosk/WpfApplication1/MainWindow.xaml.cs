@@ -17,6 +17,13 @@ using System.Windows.Shapes;
 using System.Windows.Markup;
 using System.IO;
 using System.Xml;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
+using System.Windows.Markup;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.Windows.Interop;
 
 namespace WpfApplication1
 {
@@ -31,10 +38,38 @@ namespace WpfApplication1
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // if we're not in design mode, initialize the graphics device
+            if (DesignerProperties.GetIsInDesignMode(this) == false)
+            {
+                InitializeGraphicsDevice();
+            }
 
-            
+            //graphicsService = GraphicsDeviceService.AddRef(new WindowInteropHelper(this).Handle);
 
+            GlobalVariables.serviceContainer.AddService<IGraphicsDeviceService>(graphicsService);
 
+            ContentManager contentManager = new ContentManager(GlobalVariables.serviceContainer, GlobalVariables.contentBuilder.OutputDirectory);
+
+            contentManager.Unload();
+
+            GlobalVariables.contentBuilder.Clear();
+            GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\virus2.png", "virus2", null, "TextureProcessor");
+            GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\fire.png", "fire", null, "TextureProcessor");
+            GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\blue fire.png", "blue fire", null, "TextureProcessor");
+            GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\ParticleSystem.fx", "ParticleSystem", null, "EffectProcessor");
+
+            // Build this new model data.
+            string buildError = GlobalVariables.contentBuilder.Build();
+
+            particleEffect = contentManager.Load<Effect>("ParticleSystem");
+            virus = contentManager.Load<Texture2D>("virus2");
+            fire = contentManager.Load<Texture2D>("fire");
+            blueFire = contentManager.Load<Texture2D>("blue fire");
+
+            emitter1 = new ParticleEmitter(10000, particleEffect, blueFire, fire);
+            emitter1.effectTechnique = "ChangePicAndFadeAtPercent";
+            emitter1.fadeStartPercent = .8f;
+            emitter1.changePicPercent = .6f;
         }
 
         public GifImage DeepCopy(GifImage element)
@@ -55,6 +90,20 @@ namespace WpfApplication1
             transit.GifSource = "/Images/earth.gif";
             dining.GifSource = "/Images/earth.gif";
             // Insert code required on object creation below this point.
+
+            //InitializeComponent();
+            GlobalVariables.stopwatch.Start();
+            // hook up an event to fire when the control has finished loading
+            Loaded += new RoutedEventHandler(MainWindow_Loaded);
+        }
+
+        ~MainWindow()
+        {
+            imageSource.Dispose();
+
+            // release on finalizer to clean up the graphics device
+            if (graphicsService != null)
+                graphicsService.Release();
         }
 
         private void circle_ManipulationStarting(object sender, System.Windows.Input.ManipulationStartingEventArgs e)
@@ -79,7 +128,7 @@ namespace WpfApplication1
                 var deltaManipulation = e.DeltaManipulation;
                 var matrix = ((MatrixTransform)element.RenderTransform).Matrix;
                 // find the old center; arguaby this could be cached 
-                Point center = new Point(element.ActualWidth / 2, element.ActualHeight / 2);
+                System.Windows.Point center = new System.Windows.Point(element.ActualWidth / 2, element.ActualHeight / 2);
                 // transform it to take into account transforms from previous manipulations 
                 center = matrix.Transform(center);
                 //this will be a Zoom. 
@@ -107,6 +156,9 @@ namespace WpfApplication1
 
             //Optional 
             //circle.ManipulationCompleted += new EventHandler<ManipulationCompletedEventArgs>(rect2_ManipulationCompleted);
+
+
+            
         }
 
         void rect2_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
@@ -150,6 +202,10 @@ namespace WpfApplication1
             WrapPanel window = new WrapPanel();
             window.Height = 300;
             window.Width = 250;
+            window.MaxHeight = 400;   // sets the max size for the window
+            window.MaxWidth = 350;
+            window.MinHeight = 200;   // sets the min size for the window
+            window.MinWidth = 150;
             window.IsManipulationEnabled = true;
             window.Background = Brushes.LightSlateGray;
             window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
@@ -162,40 +218,76 @@ namespace WpfApplication1
             Grid grid = new Grid();
             window.Children.Add(grid);
 
-            Ellipse leftTab = new Ellipse();
+            System.Windows.Shapes.Rectangle leftTab = new System.Windows.Shapes.Rectangle();
             leftTab.Name = "LeftTab";
-            leftTab.AddHandler(Ellipse.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
+            ImageBrush leftIcon = new ImageBrush();    // image background for close tab
+            leftIcon.ImageSource =
+                new BitmapImage(
+                    new Uri(@"Images/leftHandle.png", UriKind.Relative)
+                );
+            leftTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
             leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -125, 0);
             leftTab.Height = 75;
             leftTab.Width = 75;
-            leftTab.Fill = Brushes.LightSlateGray;
+            leftTab.MaxHeight = 75;   // sets the max size for the left tab
+            leftTab.MaxWidth = 75;
+            leftTab.MinHeight = 75;   // sets the min size for the left tab
+            leftTab.MinWidth = 75;
+            leftTab.Fill = leftIcon;
             grid.Children.Add(leftTab);
 
-            Ellipse rightTab = new Ellipse();
+            System.Windows.Shapes.Rectangle rightTab = new System.Windows.Shapes.Rectangle();
             rightTab.Name = "RightTab";
-            rightTab.AddHandler(Ellipse.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
+            ImageBrush rightIcon = new ImageBrush();    // image background for close tab
+            rightIcon.ImageSource =
+                new BitmapImage(
+                    new Uri(@"Images/rightHandle.png", UriKind.Relative)
+                );
+            rightTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
             rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 125, 0);
             rightTab.Height = 75;
             rightTab.Width = 75;
-            rightTab.Fill = Brushes.LightSlateGray;
+            rightTab.MaxHeight = 75;   // sets the max size for the right tab
+            rightTab.MaxWidth = 75;
+            rightTab.MinHeight = 75;   // sets the min size for the right tab
+            rightTab.MinWidth = 75;
+            rightTab.Fill = rightIcon; 
             grid.Children.Add(rightTab);
 
-            Rectangle closeTab = new Rectangle();
+            System.Windows.Shapes.Rectangle closeTab = new System.Windows.Shapes.Rectangle();
             closeTab.Name = "CloseTab";
-            closeTab.AddHandler(Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
+            ImageBrush closeIcon = new ImageBrush();    // image background for close tab
+            closeIcon.ImageSource =
+                new BitmapImage(
+                    new Uri(@"Images/closeIcon.png", UriKind.Relative)
+                );
+            closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
             closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 105, -155);
-            closeTab.Height = 25;
-            closeTab.Width = 40;
-            closeTab.Fill = Brushes.LightSlateGray;
+            closeTab.Height = 50;
+            closeTab.Width = 50;
+            closeTab.MaxHeight = 50;   // sets the max size for the close tab
+            closeTab.MaxWidth = 50;
+            closeTab.MinHeight = 50;   // sets the min size for the close tab
+            closeTab.MinWidth = 50;
+            closeTab.Fill = closeIcon; 
             grid.Children.Add(closeTab);
 
-            Rectangle restoreTab = new Rectangle();
+            System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();
             restoreTab.Name = "RestoreTab";
-            restoreTab.AddHandler(Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
+            ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
+            restoreIcon.ImageSource =
+                new BitmapImage(
+                    new Uri(@"Images/restoreIcon.png", UriKind.Relative)
+                );
+            restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
             restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 65, -155);
-            restoreTab.Height = 25;
-            restoreTab.Width = 40;
-            restoreTab.Fill = Brushes.LightSlateGray;
+            restoreTab.Height = 50;
+            restoreTab.Width = 50;
+            restoreTab.MaxHeight = 50;   // sets the max size for the restore tab
+            restoreTab.MaxWidth = 50;
+            restoreTab.MinHeight = 50;   // sets the min size for the restore tab
+            restoreTab.MinWidth = 50;
+            restoreTab.Fill = closeIcon; //Brushes.LightSlateGray;
             grid.Children.Add(restoreTab);
 
             WebControl webControl = new WebControl();
@@ -247,9 +339,9 @@ namespace WpfApplication1
         }
 
         private void CloseTabTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
-        {            
-            ((((sender as Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
-                    (((sender as Rectangle).Parent as Grid).Parent as WrapPanel));
+        {
+            ((((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
+                    (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel));
         }
 
 
@@ -258,8 +350,8 @@ namespace WpfApplication1
         /// </summary>
         private void RestoreTabTouchDown(object sender, EventArgs e)
         {
-            (((sender as Rectangle).Parent as Grid).Parent as WrapPanel).Height = 300;
-            (((sender as Rectangle).Parent as Grid).Parent as WrapPanel).Width = 250;
+            (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Height = 300;
+            (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Width = 250;
         }
 
         private void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
@@ -283,7 +375,7 @@ namespace WpfApplication1
                 var deltaManipulation = e.DeltaManipulation;
                 var matrix = ((MatrixTransform)element.RenderTransform).Matrix;
                 // find the old center; arguaby this could be cached 
-                Point center = new Point(element.ActualWidth / 2, element.ActualHeight / 2);
+                System.Windows.Point center = new System.Windows.Point(element.ActualWidth / 2, element.ActualHeight / 2);
                 // transform it to take into account transforms from previous manipulations 
                 center = matrix.Transform(center);
                 //this will be a Zoom. 
@@ -369,6 +461,135 @@ namespace WpfApplication1
             e.Handled = true;
             // you could set the mode here too 
             // e.Mode = ManipulationModes.All;             
+        }
+
+        #region Particle System
+
+        private static GraphicsDeviceService graphicsService;
+        private XnaImageSource imageSource;
+
+        internal ParticleEmitter emitter1;
+        Texture2D virus;
+        Texture2D fire;
+        Texture2D blueFire;
+        Effect particleEffect;
+        internal Random rand = new Random();
+        private bool isDrawTurn = false;
+
+        /// <summary>
+        /// Gets the GraphicsDevice behind the control.
+        /// </summary>
+        public static GraphicsDevice GraphicsDevice
+        {
+            get { return graphicsService.GraphicsDevice; }
+        }
+
+        public void DrawFunction(GraphicsDevice g)
+        {
+            GlobalVariables.TotalTime = GlobalVariables.stopwatch.Elapsed;
+            g.Clear(Microsoft.Xna.Framework.Color.Transparent);
+
+            if (emitter1 != null)
+            {
+                emitter1.update();
+                createParticlesInCircle(emitter1, 10, 125, new Vector2(0, 0));
+                emitter1.draw();
+            }
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            // if we're not in design mode, recreate the 
+            // image source for the new size
+            if (DesignerProperties.GetIsInDesignMode(this) == false &&
+                graphicsService != null)
+            {
+                // recreate the image source
+                imageSource.Dispose();
+                imageSource = new XnaImageSource(
+                    GraphicsDevice, (int)ActualWidth, (int)ActualHeight);
+                rootImage.Source = imageSource.WriteableBitmap;
+            }
+
+            base.OnRenderSizeChanged(sizeInfo);
+
+        }
+
+        private void InitializeGraphicsDevice()
+        {
+            if (graphicsService == null)
+            {
+                // add a reference to the graphics device
+                graphicsService = GraphicsDeviceService.AddRef(
+                    (PresentationSource.FromVisual(this) as HwndSource).Handle);
+
+                // create the image source
+                imageSource = new XnaImageSource(
+                    GraphicsDevice, (int)ActualWidth, (int)ActualHeight);
+                rootImage.Source = imageSource.WriteableBitmap;
+
+                // hook the rendering event
+                CompositionTarget.Rendering += CompositionTarget_Rendering;
+            }
+        }
+
+        /// <summary>
+        /// Draws the control and allows subclasses to override 
+        /// the default behavior of delegating the rendering.
+        /// </summary>
+        protected virtual void Render()
+        {
+            // invoke the draw delegate so someone will draw something pretty
+            //if (DrawFunction != null)
+            DrawFunction(GraphicsDevice);
+        }
+
+        void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (isDrawTurn)
+            {
+                // set the image source render target
+                GraphicsDevice.SetRenderTarget(imageSource.RenderTarget);
+
+                // allow the control to draw
+                Render();
+
+                // unset the render target
+                GraphicsDevice.SetRenderTarget(null);
+
+                // commit the changes to the image source
+                imageSource.Commit();
+            }
+            isDrawTurn = !isDrawTurn;
+        }
+
+        private void createParticlesInCircle(ParticleEmitter emitter, int maxNumToCreate, float radius, Vector2 circleOrigin)
+        {
+            double positionAngle = ((GlobalVariables.TotalTime.TotalMilliseconds % 8000.0) / 8000.0) * Math.PI * 2;
+            Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius) + circleOrigin;
+
+            for (int i = 0; i < maxNumToCreate; i++)
+            {
+                double velocityAngle = rand.NextDouble() * Math.PI * 2;
+                float velocitySpeed = rand.Next(2, 15);
+                double accelAngle = rand.NextDouble() * Math.PI * 2;
+                float accelSpeed = rand.Next(2, 15);
+                emitter.createParticles(new Vector2((float)Math.Cos(velocityAngle) * velocitySpeed, (float)Math.Sin(velocityAngle) * velocitySpeed),
+                                new Vector2((float)Math.Cos(accelAngle) * accelSpeed, (float)Math.Sin(accelAngle) * accelSpeed),
+                                position,
+                                rand.Next(5, 20),
+                                rand.Next(1000, 4000));
+            }
+        }
+
+        #endregion Particle System
+
+        private void rootImage_TouchDown(object sender, TouchEventArgs e)
+        {
+            if(emitter1 != null)
+                emitter1.createParticles(Vector2.One,
+                                     Vector2.One,
+                                     Vector2.Zero, 10, 3000);
         }
     }
 }
