@@ -37,7 +37,8 @@ namespace WpfApplication1
         public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
         private Dictionary<UIElement, int> movingGifImage = new Dictionary<UIElement, int>();
         private Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
-        private int count; 
+        private int count;
+        UIElement last; 
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -86,16 +87,16 @@ namespace WpfApplication1
 
         public MainWindow()
         {
-           // this.InitializeComponent();
             this.InitializeComponent();
             weather.GifSource = "/Images/weather.gif";
             map.GifSource = "/Images/map.gif";
             transit.GifSource = "/Images/transit.gif";
             dining.GifSource = "/Images/dining.gif";
-            // Insert code required on object creation below this point.
 
+            // Insert code required on object creation below this point.
             //InitializeComponent();
             GlobalVariables.stopwatch.Start();
+
             // hook up an event to fire when the control has finished loading
             Loaded += new RoutedEventHandler(MainWindow_Loaded);
         }
@@ -328,16 +329,20 @@ namespace WpfApplication1
 
         private void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
         {
-
+            //reset timer
+            WrapPanel tmpWindow = (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel);
+            timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
         private void RightTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
         {
-
+            //reset timer
+            WrapPanel tmpWindow = (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel);
+            timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
         private void CloseTabTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
-        {
+        {   //stop timer, remove timer and remove window, decrement count
             (timerList[(((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel)]).Stop();
             timerList.Remove(sender);
             ((((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
@@ -459,9 +464,6 @@ namespace WpfApplication1
             };
             e.Handled = true;
         }
-
-
-        UIElement last; 
 
         void window_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
         {
@@ -610,6 +612,7 @@ namespace WpfApplication1
                                      Vector2.Zero, 10, 3000);
         }
 
+        //timer event handler to close window if inactive
         void onElapsedTimer(Object sender, EventArgs args)
         {
             WrapPanel window = (((DispatcherTimer)sender).Tag as WrapPanel);
