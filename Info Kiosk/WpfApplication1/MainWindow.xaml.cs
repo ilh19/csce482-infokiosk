@@ -205,7 +205,7 @@ namespace WpfApplication1
             window.Width = 250;
             window.IsManipulationEnabled = true;
             window.Background = Brushes.LightSlateGray;
-            window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+            window.RenderTransform = new MatrixTransform(1.2, 0.5, -0.5, 1.2, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
             window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
             window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
             window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
@@ -252,13 +252,13 @@ namespace WpfApplication1
                     new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\closeIcon.png", UriKind.Relative)
                 );
             closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
-            closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 110, -166);
+            closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 110, -165);
             closeTab.Height = 30;
             closeTab.Width = 30;
             closeTab.Fill = closeIcon;
             grid.Children.Add(closeTab);
 
-            System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();
+            System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();  
             restoreTab.Name = "RestoreTab";
             ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
             restoreIcon.ImageSource =
@@ -266,7 +266,7 @@ namespace WpfApplication1
                     new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\resizeIcon.png", UriKind.Relative)
                 );
             restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
-            restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -166);
+            restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -165);
             restoreTab.Height = 30;
             restoreTab.Width = 30;
             restoreTab.Fill = restoreIcon;
@@ -360,8 +360,24 @@ namespace WpfApplication1
                 System.Windows.Point center = new System.Windows.Point(element.ActualWidth / 2, element.ActualHeight / 2);
                 // transform it to take into account transforms from previous manipulations 
                 center = matrix.Transform(center);
+
                 //this will be a Zoom. 
-                matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
+                // M11: width
+                // M22: height
+                var width = element.ActualWidth * deltaManipulation.Scale.X * matrix.M11;
+                var height = element.ActualHeight * deltaManipulation.Scale.Y * matrix.M22;
+
+                double maxWidth = element.ActualWidth + 100;
+                double minWidth = element.ActualWidth - 100;
+                double maxHeight = element.ActualHeight + 100;
+                double minHeight = element.ActualHeight - 100;
+
+                // maximum and minimum height and width
+                if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight)
+                {
+                    matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
+                }
+
                 // Rotation 
                 matrix.RotateAt(e.DeltaManipulation.Rotation, center.X, center.Y);
                 //Translation (pan) 

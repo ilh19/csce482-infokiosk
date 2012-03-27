@@ -209,11 +209,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\closeIcon.png" />
-    <Resource Include="Images\resizeIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\leftHandle.png" />
     <Resource Include="Images\rightHandle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\resizeIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
