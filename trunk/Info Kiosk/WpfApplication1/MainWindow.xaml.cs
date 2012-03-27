@@ -24,6 +24,7 @@ using System.Windows.Markup;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace WpfApplication1
 {
@@ -35,6 +36,8 @@ namespace WpfApplication1
 
         public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
         private Dictionary<UIElement, int> movingGifImage = new Dictionary<UIElement, int>();
+        private Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
+        private int count; 
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -85,10 +88,10 @@ namespace WpfApplication1
         {
            // this.InitializeComponent();
             this.InitializeComponent();
-            weather.GifSource = "/Images/earth.gif";
-            map.GifSource = "/Images/earth.gif";
-            transit.GifSource = "/Images/earth.gif";
-            dining.GifSource = "/Images/earth.gif";
+            weather.GifSource = "/Images/weather.gif";
+            map.GifSource = "/Images/map.gif";
+            transit.GifSource = "/Images/transit.gif";
+            dining.GifSource = "/Images/dining.gif";
             // Insert code required on object creation below this point.
 
             //InitializeComponent();
@@ -199,115 +202,128 @@ namespace WpfApplication1
                 movingGifImage.Remove((GifImage)sender);
             }
 
-            WrapPanel window = new WrapPanel();
-            window.Name = "widgetWindow";
-            window.Height = 300;
-            window.Width = 250;
-            window.IsManipulationEnabled = true;
-            window.Background = Brushes.LightSlateGray;
-            window.RenderTransform = new MatrixTransform(1.2, 0.5, -0.5, 1.2, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
-            window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
-            window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
-            window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
-            window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
-            canvas.Children.Add(window);
-
-            Grid grid = new Grid();
-            grid.Name = "WidgetGrid";
-            window.Children.Add(grid);
-
-            System.Windows.Shapes.Rectangle leftTab = new System.Windows.Shapes.Rectangle();
-            leftTab.Name = "LeftTab";
-            ImageBrush leftIcon = new ImageBrush();    // image background for close tab
-            leftIcon.ImageSource =
-                new BitmapImage(
-                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\leftHandle.png", UriKind.Relative)
-                );
-            leftTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
-            leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -140, 0);
-            leftTab.Height = 80;
-            leftTab.Width = 35;
-            leftTab.Fill = leftIcon;
-            grid.Children.Add(leftTab);
-
-            System.Windows.Shapes.Rectangle rightTab = new System.Windows.Shapes.Rectangle();
-            rightTab.Name = "RightTab";
-            ImageBrush rightIcon = new ImageBrush();    // image background for close tab
-            rightIcon.ImageSource =
-                new BitmapImage(
-                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\rightHandle.png", UriKind.Relative)
-                );
-            rightTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
-            rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 140, 0);
-            rightTab.Height = 80;
-            rightTab.Width = 35;
-            rightTab.Fill = rightIcon;
-            grid.Children.Add(rightTab);
-
-            System.Windows.Shapes.Rectangle closeTab = new System.Windows.Shapes.Rectangle();
-            closeTab.Name = "CloseTab";
-            ImageBrush closeIcon = new ImageBrush();    // image background for close tab
-            closeIcon.ImageSource =
-                new BitmapImage(
-                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\closeIcon.png", UriKind.Relative)
-                );
-            closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
-            closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 110, -165);
-            closeTab.Height = 30;
-            closeTab.Width = 30;
-            closeTab.Fill = closeIcon;
-            grid.Children.Add(closeTab);
-
-            System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();  
-            restoreTab.Name = "RestoreTab";
-            ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
-            restoreIcon.ImageSource =
-                new BitmapImage(
-                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\resizeIcon.png", UriKind.Relative)
-                );
-            restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
-            restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -165);
-            restoreTab.Height = 30;
-            restoreTab.Width = 30;
-            restoreTab.Fill = restoreIcon;
-            grid.Children.Add(restoreTab);
-
-            WebControl webControl = new WebControl();
-            webControl.Name = "webControl";
-
-            if ((sender as GifImage).Name == "map")
+            if (count <= Constants.maxWin)
             {
-                webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\maps.htm");
-            }
-            else if ((sender as GifImage).Name == "transit")
-            {
-                webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.html");
-            }
-            else if ((sender as GifImage).Name == "weather")
-            {
-                webControl.Source = new Uri("http://theshinyspoonpay.appspot.com");
-            }
-            else if ((sender as GifImage).Name == "dining")
-            {
-                webControl.Source = new Uri("http://m.tamu.edu/dining");
+                count++;
+                WrapPanel window = new WrapPanel();
+                window.Name = "widgetWindow";
+                window.Height = 300;
+                window.Width = 250;
+                window.IsManipulationEnabled = true;
+                window.Background = Brushes.LightSlateGray;
+                window.RenderTransform = new MatrixTransform(1.2, 0.5, -0.5, 1.2, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+                window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
+                window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
+                window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
+                window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
+
+                //add timer to window
+                DispatcherTimer newTimer = new DispatcherTimer();
+                newTimer.Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
+                newTimer.Tick += new EventHandler(onElapsedTimer);
+                newTimer.Tag = window;
+                newTimer.Start();
+                timerList[window] = newTimer;
+
+                canvas.Children.Add(window);
+
+                Grid grid = new Grid();
+                grid.Name = "WidgetGrid";
+                window.Children.Add(grid);
+
+                System.Windows.Shapes.Rectangle leftTab = new System.Windows.Shapes.Rectangle();
+                leftTab.Name = "LeftTab";
+                ImageBrush leftIcon = new ImageBrush();    // image background for close tab
+                leftIcon.ImageSource =
+                    new BitmapImage(
+                        new Uri("pack://application:,,,/Images/leftHandle.png")
+                    );
+                leftTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
+                leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -140, 0);
+                leftTab.Height = 80;
+                leftTab.Width = 35;
+                leftTab.Fill = leftIcon;
+                grid.Children.Add(leftTab);
+
+                System.Windows.Shapes.Rectangle rightTab = new System.Windows.Shapes.Rectangle();
+                rightTab.Name = "RightTab";
+                ImageBrush rightIcon = new ImageBrush();    // image background for close tab
+                rightIcon.ImageSource =
+                    new BitmapImage(
+                        new Uri("pack://application:,,,/Images/rightHandle.png")
+                    );
+                rightTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
+                rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 140, 0);
+                rightTab.Height = 80;
+                rightTab.Width = 35;
+                rightTab.Fill = rightIcon;
+                grid.Children.Add(rightTab);
+
+                System.Windows.Shapes.Rectangle closeTab = new System.Windows.Shapes.Rectangle();
+                closeTab.Name = "CloseTab";
+                ImageBrush closeIcon = new ImageBrush();    // image background for close tab
+                closeIcon.ImageSource =
+                    new BitmapImage(
+                        new Uri("pack://application:,,,/Images/closeIcon.png")
+                    );
+                closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
+                closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 110, -165);
+                closeTab.Height = 30;
+                closeTab.Width = 30;
+                closeTab.Fill = closeIcon;
+                grid.Children.Add(closeTab);
+
+                System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();
+                restoreTab.Name = "RestoreTab";
+                ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
+                restoreIcon.ImageSource =
+                    new BitmapImage(
+                        new Uri("pack://application:,,,/Images/resizeIcon.png")
+                    );
+                restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
+                restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -165);
+                restoreTab.Height = 30;
+                restoreTab.Width = 30;
+                restoreTab.Fill = restoreIcon;
+                grid.Children.Add(restoreTab);
+
+                WebControl webControl = new WebControl();
+                webControl.Name = "webControl";
+
+                if ((sender as GifImage).Name == "map")
+                {
+                    webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\maps.htm");
+                }
+                else if ((sender as GifImage).Name == "transit")
+                {
+                    webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.html");
+                }
+                else if ((sender as GifImage).Name == "weather")
+                {
+                    webControl.Source = new Uri("http://theshinyspoonpay.appspot.com");
+                }
+                else if ((sender as GifImage).Name == "dining")
+                {
+                    webControl.Source = new Uri("http://m.tamu.edu/dining");
+                }
+                else
+                {
+                    //webControl.Source = new Uri("http://www.bing.com/search?q=" + sender);
+                    webControl.Source = new Uri("http://m.tamu.edu/");
+                }
+
+                //webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.htm");
+
+                webControl.Margin = new Thickness(0, 0, 0, 0);
+                webControl.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+                webControl.Width = 250;
+                webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+                grid.Children.Add(webControl);
             }
             else
             {
-                //webControl.Source = new Uri("http://www.bing.com/search?q=" + sender);
-                webControl.Source = new Uri("http://m.tamu.edu/");
+                //limit reached
             }
-
-
-            //webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.htm");
-
-
-
-
-            webControl.Margin = new Thickness(0, 0, 0, 0);
-            webControl.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            webControl.Width = 250;
-            webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
-            grid.Children.Add(webControl);
         }
 
         private void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
@@ -322,8 +338,11 @@ namespace WpfApplication1
 
         private void CloseTabTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            (timerList[(((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel)]).Stop();
+            timerList.Remove(sender);
             ((((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
                     (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel));
+            count--;
         }
 
 
@@ -338,7 +357,8 @@ namespace WpfApplication1
 
         private void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
-
+            //reset timer
+            timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
         private void window_ManipulationDelta(object sender, System.Windows.Input.ManipulationDeltaEventArgs e)
@@ -588,6 +608,15 @@ namespace WpfApplication1
                 emitter1.createParticles(Vector2.One,
                                      Vector2.One,
                                      Vector2.Zero, 10, 3000);
+        }
+
+        void onElapsedTimer(Object sender, EventArgs args)
+        {
+            WrapPanel window = (((DispatcherTimer)sender).Tag as WrapPanel);
+            timerList[window].Stop();
+            ((window).Parent as Canvas).Children.Remove(window);
+            timerList.Remove(sender);
+            count--;
         }
     }
 }
