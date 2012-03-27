@@ -20,7 +20,6 @@ using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using System.Windows.Markup;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Interop;
@@ -351,13 +350,19 @@ namespace WpfApplication1
         }
 
 
-        /// <summary>
-        /// Should restore the original size of the window to the default size...having issues. -VG
-        /// </summary>
+
+        /*
+        * Restores the widget to the original/default size
+        */
         private void RestoreTabTouchDown(object sender, EventArgs e)
         {
-            (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Height = 300;
-            (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Width = 250;
+            WrapPanel panel = ((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel;
+            var matrix = ((MatrixTransform)panel.RenderTransform).Matrix;
+            System.Windows.Point center = new System.Windows.Point(panel.ActualWidth / 2, panel.ActualHeight / 2);
+            center = matrix.Transform(center);
+            // scaling back to original X and Y values, change 1.2 for original scaling
+            matrix.ScaleAt(1.2 / matrix.M11, 1.2 / matrix.M22, center.X, center.Y);
+            panel.RenderTransform = new MatrixTransform(matrix);
         }
 
         private void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
@@ -366,6 +371,11 @@ namespace WpfApplication1
             timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
+        /**
+         * This function manipulates the matrix transform of the widget. 
+         * It performs scaling, rotation, and translation transformations. 
+         * 
+         */
         private void window_ManipulationDelta(object sender, System.Windows.Input.ManipulationDeltaEventArgs e)
         {
             //this just gets the source. 
