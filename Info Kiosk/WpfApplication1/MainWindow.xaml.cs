@@ -200,12 +200,9 @@ namespace WpfApplication1
             }
 
             WrapPanel window = new WrapPanel();
+            window.Name = "widgetWindow";
             window.Height = 300;
             window.Width = 250;
-            window.MaxHeight = 400;   // sets the max size for the window
-            window.MaxWidth = 350;
-            window.MinHeight = 200;   // sets the min size for the window
-            window.MinWidth = 150;
             window.IsManipulationEnabled = true;
             window.Background = Brushes.LightSlateGray;
             window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
@@ -216,6 +213,7 @@ namespace WpfApplication1
             canvas.Children.Add(window);
 
             Grid grid = new Grid();
+            grid.Name = "WidgetGrid";
             window.Children.Add(grid);
 
             System.Windows.Shapes.Rectangle leftTab = new System.Windows.Shapes.Rectangle();
@@ -223,16 +221,12 @@ namespace WpfApplication1
             ImageBrush leftIcon = new ImageBrush();    // image background for close tab
             leftIcon.ImageSource =
                 new BitmapImage(
-                    new Uri(@"Images/leftHandle.png", UriKind.Relative)
+                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\leftHandle.png", UriKind.Relative)
                 );
             leftTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
-            leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -125, 0);
-            leftTab.Height = 75;
-            leftTab.Width = 75;
-            leftTab.MaxHeight = 75;   // sets the max size for the left tab
-            leftTab.MaxWidth = 75;
-            leftTab.MinHeight = 75;   // sets the min size for the left tab
-            leftTab.MinWidth = 75;
+            leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -140, 0);
+            leftTab.Height = 80;
+            leftTab.Width = 35;
             leftTab.Fill = leftIcon;
             grid.Children.Add(leftTab);
 
@@ -241,17 +235,13 @@ namespace WpfApplication1
             ImageBrush rightIcon = new ImageBrush();    // image background for close tab
             rightIcon.ImageSource =
                 new BitmapImage(
-                    new Uri(@"Images/rightHandle.png", UriKind.Relative)
+                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\rightHandle.png", UriKind.Relative)
                 );
             rightTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
-            rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 125, 0);
-            rightTab.Height = 75;
-            rightTab.Width = 75;
-            rightTab.MaxHeight = 75;   // sets the max size for the right tab
-            rightTab.MaxWidth = 75;
-            rightTab.MinHeight = 75;   // sets the min size for the right tab
-            rightTab.MinWidth = 75;
-            rightTab.Fill = rightIcon; 
+            rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 140, 0);
+            rightTab.Height = 80;
+            rightTab.Width = 35;
+            rightTab.Fill = rightIcon;
             grid.Children.Add(rightTab);
 
             System.Windows.Shapes.Rectangle closeTab = new System.Windows.Shapes.Rectangle();
@@ -259,17 +249,13 @@ namespace WpfApplication1
             ImageBrush closeIcon = new ImageBrush();    // image background for close tab
             closeIcon.ImageSource =
                 new BitmapImage(
-                    new Uri(@"Images/closeIcon.png", UriKind.Relative)
+                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\closeIcon.png", UriKind.Relative)
                 );
             closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
-            closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 105, -155);
-            closeTab.Height = 50;
-            closeTab.Width = 50;
-            closeTab.MaxHeight = 50;   // sets the max size for the close tab
-            closeTab.MaxWidth = 50;
-            closeTab.MinHeight = 50;   // sets the min size for the close tab
-            closeTab.MinWidth = 50;
-            closeTab.Fill = closeIcon; 
+            closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 110, -166);
+            closeTab.Height = 30;
+            closeTab.Width = 30;
+            closeTab.Fill = closeIcon;
             grid.Children.Add(closeTab);
 
             System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();
@@ -277,17 +263,13 @@ namespace WpfApplication1
             ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
             restoreIcon.ImageSource =
                 new BitmapImage(
-                    new Uri(@"Images/restoreIcon.png", UriKind.Relative)
+                    new Uri(@"Z:\CSCE 482\csce482-infokiosk\Info Kiosk\WpfApplication1\Images\resizeIcon.png", UriKind.Relative)
                 );
             restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
-            restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 65, -155);
-            restoreTab.Height = 50;
-            restoreTab.Width = 50;
-            restoreTab.MaxHeight = 50;   // sets the max size for the restore tab
-            restoreTab.MaxWidth = 50;
-            restoreTab.MinHeight = 50;   // sets the min size for the restore tab
-            restoreTab.MinWidth = 50;
-            restoreTab.Fill = closeIcon; //Brushes.LightSlateGray;
+            restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -166);
+            restoreTab.Height = 30;
+            restoreTab.Width = 30;
+            restoreTab.Fill = restoreIcon;
             grid.Children.Add(restoreTab);
 
             WebControl webControl = new WebControl();
