@@ -1,0 +1,214 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0076)http://m.tamu.edu/map/embedded/code/KYLE/zoom/14/header/Texas+A&M+University -->
+<HTML><HEAD>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+<META name=viewport content="initial-scale=1.0, user-scalable=no">
+<STYLE type=text/css>HTML {
+	HEIGHT: 100%
+}
+BODY {
+	PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FONT-FAMILY: Frutiger, "Segoe UI", Arial, Helvetica, Verdana, sans-serif; HEIGHT: 93%; FONT-SIZE: 70%; PADDING-TOP: 0px
+}
+#map_canvas {
+	HEIGHT: 93%
+}
+</STYLE>
+<!-- DUPLICATE CSS ----------------------><LINK rel=stylesheet type=text/css 
+href="Texas+A&amp;M+Universit_files/global.css"><LINK rel=stylesheet 
+type=text/css href="Texas+A&amp;M+Universit_files/basic.css"><LINK 
+rel=stylesheet type=text/css href="Texas+A&amp;M+Universit_files/mobile.css"><!-- --------------------------><!-- import google map api -->
+<SCRIPT type=text/javascript src="Texas+A&amp;M+Universit_files/js">
+		</SCRIPT>
+<!-- create map object -->
+<script type="text/javascript">
+
+
+
+			// the google map object
+
+			var mMap;
+
+		
+
+			// the pin graphic
+
+			var mImage = '/images/apps/map/dining.png';
+
+
+
+			// are pins turned on during this session?
+
+			var mPinsOn = true
+
+			
+
+			// collection of pins
+
+			var mPins = new Array();
+
+
+
+			// initalize the pins
+			mPins[0] = pinObj("-96.35016411193601", "30.61157092710696", "West Campus Library", "0398");
+			
+
+			// create map, called on body create
+
+			function initialize() {
+
+				
+
+			    var latlng = new google.maps.LatLng(mPins[0].lat, mPins[0].lon);
+
+
+
+			    var myOptions = {
+
+			      	zoom: 17,
+
+			      	center: latlng,
+
+			      	navigationControl: true,
+
+			      	mapTypeId: google.maps.MapTypeId.ROADMAP,
+					disableDoubleClickZoom: true,
+					scrollwheel: false
+
+			    };
+
+
+
+			    mMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+
+
+				addPinsToMap();
+
+				
+
+			 	// scroll window to remove url bar, mobile
+
+			  	setTimeout(function(){window.scrollTo(0, 1);}, 100);
+
+			  	 
+
+			}
+
+
+
+			// cycle through pin(s) and add them to map if specified in settings			
+
+			function addPinsToMap(){
+
+
+
+				if(!mPinsOn){  return; }
+
+
+
+				for(i = 0; i < mPins.length; i++){	
+
+					// pin desc, title
+
+                    var contentString = '<h2 style="color:black; font-size:110%">'+mPins[i].name+'</h2>';
+
+                    codePrint = '';
+
+                    if (mPins[i].code == 'BUSSTOP') {
+
+                        codePrint = 'Bus stop';
+
+                    } else {
+
+                        codePrint = 'Code: '+mPins[i].code;
+
+                    }
+
+					contentString += '<p style="color:black;">' + codePrint + '</p>';
+
+
+
+                    var latlng = new google.maps.LatLng(mPins[i].lat, mPins[i].lon);
+
+
+
+					var marker = new google.maps.Marker({
+
+				      	position: latlng,
+
+					    map: mMap,
+
+					    icon: mImage
+
+					});
+
+
+
+                    console.dir(marker);
+
+		
+
+					attachListener(marker, latlng, contentString);
+
+				}
+
+			}
+
+
+
+			// create event listener
+
+			function attachListener(marker, latlng, content) {
+
+			  	var infowindow = new google.maps.InfoWindow(
+
+			  		{ 	
+
+				  		content: content
+
+				    });
+
+				google.maps.event.addListener(marker, 'click', function() {
+
+					infowindow.close(mMap);
+
+				    infowindow.open(mMap, marker);
+
+				});
+
+			}
+
+			
+
+
+
+			// what makes a point on an aggie map?
+
+			function pinObj(lon, lat, name, code){
+
+				var pin = new Object();
+
+				pin.lon = lon;
+
+				pin.lat = lat;
+
+				pin.name = name;
+
+				pin.code = code;
+
+				return pin;
+
+			}
+
+
+
+		</script>
+
+
+<META name=GENERATOR content="MSHTML 8.00.7601.17744"></HEAD>
+<BODY onload=initialize()>
+<H1 style="HEIGHT: 6%; WIDTH: 220px; MARGIN-LEFT: auto; MARGIN-RIGHT: auto;">Texas A&amp;M Maps</H1><!-- Search Bar -->
+
+<DIV style="WIDTH: 235px; MARGIN-LEFT: auto; MARGIN-RIGHT: auto" 
+id=map_canvas></DIV>
+

@@ -8,7 +8,7 @@
 	x:Name="Window"
 	Title="MainWindow"
 	Width="1600" Height="1200" Loaded="Window_Loaded"
-    WindowStyle="None" WindowState="Maximized" Topmost="True" Cursor="None">
+    WindowStyle="None" Topmost="True" Cursor="None">
 
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
