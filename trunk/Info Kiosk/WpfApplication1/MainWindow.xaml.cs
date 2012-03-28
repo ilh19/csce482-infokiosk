@@ -37,7 +37,9 @@ namespace WpfApplication1
         private Dictionary<UIElement, int> movingGifImage = new Dictionary<UIElement, int>();
         private Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
         private int count;
-        UIElement last; 
+        UIElement last;
+        Dictionary<InputDevice, Vector2> lastPosition = new Dictionary<InputDevice, Vector2>();
+
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -58,6 +60,7 @@ namespace WpfApplication1
             GlobalVariables.contentBuilder.Clear();
             GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\virus2.png", "virus2", null, "TextureProcessor");
             GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\fire.png", "fire", null, "TextureProcessor");
+            GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\fire2.png", "fire2", null, "TextureProcessor");
             GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\blue fire.png", "blue fire", null, "TextureProcessor");
             GlobalVariables.contentBuilder.Add("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\Content\\ParticleSystem.fx", "ParticleSystem", null, "EffectProcessor");
 
@@ -66,13 +69,13 @@ namespace WpfApplication1
 
             particleEffect = contentManager.Load<Effect>("ParticleSystem");
             virus = contentManager.Load<Texture2D>("virus2");
+            fire2 = contentManager.Load<Texture2D>("fire2");
             fire = contentManager.Load<Texture2D>("fire");
             blueFire = contentManager.Load<Texture2D>("blue fire");
 
-            emitter1 = new ParticleEmitter(10000, particleEffect, blueFire, fire);
-            emitter1.effectTechnique = "ChangePicAndFadeAtPercent";
-            emitter1.fadeStartPercent = .8f;
-            emitter1.changePicPercent = .6f;
+            emitter1 = new ParticleEmitter(100000, particleEffect, fire2);
+            emitter1.effectTechnique = "FadeAtXPercent";
+            emitter1.fadeStartPercent = .1f;
         }
 
         public GifImage DeepCopy(GifImage element)
@@ -161,7 +164,7 @@ namespace WpfApplication1
             //circle.ManipulationCompleted += new EventHandler<ManipulationCompletedEventArgs>(rect2_ManipulationCompleted);
 
 
-            
+
         }
 
         void rect2_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
@@ -349,8 +352,6 @@ namespace WpfApplication1
             count--;
         }
 
-
-
         /*
         * Restores the widget to the original/default size
         */
@@ -501,6 +502,7 @@ namespace WpfApplication1
         internal ParticleEmitter emitter1;
         Texture2D virus;
         Texture2D fire;
+        Texture2D fire2;
         Texture2D blueFire;
         Effect particleEffect;
         internal Random rand = new Random();
@@ -522,7 +524,6 @@ namespace WpfApplication1
             if (emitter1 != null)
             {
                 emitter1.update();
-                createParticlesInCircle(emitter1, 10, 125, new Vector2(0, 0));
                 emitter1.draw();
             }
         }
@@ -593,33 +594,40 @@ namespace WpfApplication1
             isDrawTurn = !isDrawTurn;
         }
 
-        private void createParticlesInCircle(ParticleEmitter emitter, int maxNumToCreate, float radius, Vector2 circleOrigin)
-        {
-            double positionAngle = ((GlobalVariables.TotalTime.TotalMilliseconds % 8000.0) / 8000.0) * Math.PI * 2;
-            Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius) + circleOrigin;
-
-            for (int i = 0; i < maxNumToCreate; i++)
-            {
-                double velocityAngle = rand.NextDouble() * Math.PI * 2;
-                float velocitySpeed = rand.Next(2, 15);
-                double accelAngle = rand.NextDouble() * Math.PI * 2;
-                float accelSpeed = rand.Next(2, 15);
-                emitter.createParticles(new Vector2((float)Math.Cos(velocityAngle) * velocitySpeed, (float)Math.Sin(velocityAngle) * velocitySpeed),
-                                new Vector2((float)Math.Cos(accelAngle) * accelSpeed, (float)Math.Sin(accelAngle) * accelSpeed),
-                                position,
-                                rand.Next(5, 20),
-                                rand.Next(1000, 4000));
-            }
-        }
-
         #endregion Particle System
 
-        private void rootImage_TouchDown(object sender, TouchEventArgs e)
+        private void rootImage_TouchMove(object sender, TouchEventArgs e)
         {
-            if(emitter1 != null)
-                emitter1.createParticles(Vector2.One,
-                                     Vector2.One,
-                                     Vector2.Zero, 10, 3000);
+            if (emitter1 != null)
+            {
+                Vector2 currPosition = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
+
+                if (!lastPosition.ContainsKey(e.Device))
+                    lastPosition.Add(e.Device, currPosition);
+
+                float distance = Vector2.Distance(lastPosition[e.Device], currPosition);
+                for (float i = 0; i <= distance; i += 1f)
+                {
+                    float ratio;
+                    if (distance <= 0.001)
+                        ratio = 0;
+                    else
+                        ratio = i / distance;
+                    Vector2 lastPos = lastPosition[e.Device];
+
+                    double velocityAngle = rand.NextDouble() * Math.PI * 2;
+                    float velocitySpeed = rand.Next(5, 10);
+                    double accelAngle = rand.NextDouble() * Math.PI * 2;
+                    float accelSpeed = rand.Next(5, 10);
+                    emitter1.createParticles(new Vector2((float)Math.Cos(velocityAngle) * velocitySpeed, (float)Math.Sin(velocityAngle) * velocitySpeed),
+                                             new Vector2((float)Math.Cos(accelAngle) * accelSpeed, (float)Math.Sin(accelAngle) * accelSpeed),
+                                             new Vector2(lastPos.X * ratio + currPosition.X * (1 - ratio), lastPos.Y * ratio + currPosition.Y * (1 - ratio)),
+                                             45,
+                                             9000);
+                }
+
+                lastPosition[e.Device] = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
+            }
         }
 
         //timer event handler to close window if inactive

@@ -7,7 +7,7 @@
 	x:Class="WpfApplication1.MainWindow"
 	x:Name="Window"
 	Title="MainWindow"
-	Width="930" Height="700" Loaded="Window_Loaded"
+	Width="1600" Height="1200" Loaded="Window_Loaded"
     WindowStyle="None" WindowState="Maximized" Topmost="True" Cursor="None">
 
     <Grid x:Name="LayoutRoot">
@@ -15,7 +15,7 @@
             <ImageBrush ImageSource="Images/background.jpg"/>
         </Grid.Background>
         <Canvas x:Name="canvas">
-            <Image x:Name="rootImage" Width="1584" Height="1200" TouchDown="rootImage_TouchDown" Canvas.Left="0" Canvas.Top="6" />
+            <Image x:Name="rootImage" Width="1600" Height="1200" TouchMove="rootImage_TouchMove" Canvas.Left="0" Canvas.Top="6"/>
             <local:GifImage x:Name="weather"  HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="472" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <local:GifImage x:Name="transit"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="585" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <local:GifImage x:Name="map"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="808" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
