@@ -16,5 +16,5 @@ apps - chandler
 
 later...
 
-Implement restore to default size
+Implement restore to default size - implemented (irma)
 default webcontrol to larger size, so resize looks better +

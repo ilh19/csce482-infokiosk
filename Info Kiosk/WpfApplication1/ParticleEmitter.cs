@@ -273,20 +273,19 @@ namespace WpfApplication1
             //These lines store data in variables on the graphics card
             effect.Parameters["xCurrentTime"].SetValue((int)GlobalVariables.TotalTime.TotalMilliseconds);
 
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
+            if (numOfActiveParticles > 0)
+                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
 
-                MainWindow.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
-                                                               particleVertices,
-                                                               0,
-                                                               numOfActiveParticles * 4,
-                                                               particleIndices,
-                                                               0,
-                                                               numOfActiveParticles * 2,
-                                                               ParticleVertexFormat.VertexDeclaration
-                                                               );
-            }
+                    MainWindow.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList,
+                                                                  0,
+                                                                  0,
+                                                                  numOfActiveParticles * 4,
+                                                                  0,
+                                                                  numOfActiveParticles * 2
+                                                                  );
+                }
         }
     }
 }
