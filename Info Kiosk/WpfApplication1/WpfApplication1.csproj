@@ -221,6 +221,11 @@
     <Resource Include="Images\transit.gif" />
     <Resource Include="Images\map.gif" />
     <Resource Include="Images\dining.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\background.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\weather.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

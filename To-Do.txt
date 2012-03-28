@@ -1,12 +1,14 @@
 add attract mode - bruce / vincent 
 limit window max and min size - irma
-add gifs to widget circles - clarissa
+add gifs to widget circles - clarissa (completed)
 add graphics to window close/restore size/handles -irma
 do not resize window controls with window - irma
 add border to window - chandler
-window close itself after timeout - clarissa
-max number of windows - clarissa
+window close itself after timeout - clarissa (completed)
+max number of windows - clarissa (completed)
 apps - chandler
+
+
 
 
 
@@ -16,5 +18,6 @@ apps - chandler
 
 later...
 
+multi-touch in awesomium
 Implement restore to default size
 default webcontrol to larger size, so resize looks better +

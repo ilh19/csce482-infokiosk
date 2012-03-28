@@ -24,8 +24,8 @@ namespace WpfApplication1
 
     static class Constants
     {
-        public const int closeInterval = 30000; //in milliseconds
-        public const int maxWin = 5;
+        public const int closeInterval = 60000; //in milliseconds
+        public const int maxWin = 15;
     }
 
     public partial class App : Application
