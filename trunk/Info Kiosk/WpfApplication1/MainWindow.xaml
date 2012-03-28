@@ -12,12 +12,12 @@
 
     <Grid x:Name="LayoutRoot">
         <Grid.Background>
-            <ImageBrush ImageSource="Images/background.jpg"/>
+            <ImageBrush ImageSource="Images/background.png"/>
         </Grid.Background>
         <Canvas x:Name="canvas">
             <Image x:Name="rootImage" Width="1600" Height="1200" TouchMove="rootImage_TouchMove" Canvas.Left="0" Canvas.Top="6"/>
             <local:GifImage x:Name="weather"  HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="472" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
-            <local:GifImage x:Name="transit"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="585" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
+            <local:GifImage x:Name="transit"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="578" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <local:GifImage x:Name="map"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="808" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <local:GifImage x:Name="dining" HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="702" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <TextBlock x:Name="textbox" Height="44" Margin="29,0,140,35" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
