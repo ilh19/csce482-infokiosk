@@ -1,1 +1,8 @@
 http://m.yahoo.com/w/ygo-weather/forecast.bp?l=12791788&_al=off&.intl=US&.lang=en
+possibly include  aback button on the map its
+make button on map bigger
+window max size too small probably
+too much to scroll on dining
+windows should stay up a bit longer
+still dont have a message for drag button to move on main screen
+transit text too small, possibly change into some screen selecting into it, rather than its current mode, or start its window a bit larger than the others(50px wider may be enough)

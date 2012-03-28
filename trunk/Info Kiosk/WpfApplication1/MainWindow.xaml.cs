@@ -307,7 +307,7 @@ namespace WpfApplication1
                 }
                 else if ((sender as GifImage).Name == "dining")
                 {
-                    webControl.Source = new Uri("http://m.tamu.edu/dining");
+                    webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\dining.htm");
                 }
                 else
                 {
@@ -623,7 +623,7 @@ namespace WpfApplication1
                                              new Vector2((float)Math.Cos(accelAngle) * accelSpeed, (float)Math.Sin(accelAngle) * accelSpeed),
                                              new Vector2(lastPos.X * ratio + currPosition.X * (1 - ratio), lastPos.Y * ratio + currPosition.Y * (1 - ratio)),
                                              45,
-                                             9000);
+                                             2000);
                 }
 
                 lastPosition[e.Device] = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
