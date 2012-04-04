@@ -18,6 +18,7 @@ namespace WpfApplication1
         public static GifImage gifCopy;
         public static System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
         public static TimeSpan TotalTime;
+        public static TimeSpan PrevTime;
         public static ContentBuilder contentBuilder = new ContentBuilder();
         public static ServiceContainer serviceContainer = new ServiceContainer();
     }

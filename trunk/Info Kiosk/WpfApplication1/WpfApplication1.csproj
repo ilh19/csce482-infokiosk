@@ -37,11 +37,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Awesomium.Core, Version=1.6.4.0, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
+    <Reference Include="Awesomium.Core, Version=1.6.5.0, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>references\Awesomium.Core.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="Awesomium.Windows.Controls, Version=1.6.4.0, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86">
+    <Reference Include="Awesomium.Windows.Controls, Version=1.6.5.0, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\Awesomium.Windows.Controls.dll</HintPath>
     </Reference>
@@ -147,6 +147,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Class1.cs" />
     <Compile Include="ContentBuilder.cs" />
     <Compile Include="ErrorLogger.cs" />
     <Compile Include="ParticleEmitter.cs" />
@@ -227,6 +228,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\weather.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\gray.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

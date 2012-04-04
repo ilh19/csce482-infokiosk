@@ -38,7 +38,9 @@ namespace WpfApplication1
         private Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
         private int count;
         UIElement last;
-        Dictionary<InputDevice, Vector2> lastPosition = new Dictionary<InputDevice, Vector2>();
+        Dictionary<int, Vector2> lastPosition = new Dictionary<int, Vector2>();
+        CircularArray<Vector2> lastPositionArray = new CircularArray<Vector2>(2000);
+        TimeSpan lastTouchTime;
 
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -48,7 +50,6 @@ namespace WpfApplication1
             {
                 InitializeGraphicsDevice();
             }
-
             //graphicsService = GraphicsDeviceService.AddRef(new WindowInteropHelper(this).Handle);
 
             GlobalVariables.serviceContainer.AddService<IGraphicsDeviceService>(graphicsService);
@@ -179,6 +180,8 @@ namespace WpfApplication1
 
         private void gifImage_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             if (movingGifImage.ContainsKey((GifImage)sender) == false)
             {
                 GlobalVariables.gifCopy = new GifImage();
@@ -197,6 +200,8 @@ namespace WpfApplication1
 
         private void gifImage_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             // TODO: Add event handler implementation here.
 
             if (movingGifImage.ContainsKey((GifImage)sender))
@@ -214,7 +219,7 @@ namespace WpfApplication1
                 window.Width = 250;
                 window.IsManipulationEnabled = true;
                 window.Background = Brushes.LightSlateGray;
-                window.RenderTransform = new MatrixTransform(1.2, 0.5, -0.5, 1.2, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+                window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
                 window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
                 window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
                 window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
@@ -308,13 +313,14 @@ namespace WpfApplication1
                 else if ((sender as GifImage).Name == "dining")
                 {
                     webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\dining.htm");
+                   // webControl.Source = new Uri("http://m.tamu.edu/dining/north");
                 }
                 else
                 {
                     //webControl.Source = new Uri("http://www.bing.com/search?q=" + sender);
                     webControl.Source = new Uri("http://m.tamu.edu/");
                 }
-
+                webControl.SelfUpdate = false;
                 //webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.htm");
 
                 webControl.Margin = new Thickness(0, 0, 0, 0);
@@ -331,6 +337,8 @@ namespace WpfApplication1
 
         private void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             //reset timer
             WrapPanel tmpWindow = (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel);
             timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
@@ -338,13 +346,18 @@ namespace WpfApplication1
 
         private void RightTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             //reset timer
             WrapPanel tmpWindow = (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel);
             timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
         private void CloseTabTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
-        {   //stop timer, remove timer and remove window, decrement count
+        {
+            lastTouchTime = GlobalVariables.TotalTime;
+
+            //stop timer, remove timer and remove window, decrement count
             (timerList[(((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel)]).Stop();
             timerList.Remove(sender);
             ((((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
@@ -357,17 +370,21 @@ namespace WpfApplication1
         */
         private void RestoreTabTouchDown(object sender, EventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             WrapPanel panel = ((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel;
             var matrix = ((MatrixTransform)panel.RenderTransform).Matrix;
             System.Windows.Point center = new System.Windows.Point(panel.ActualWidth / 2, panel.ActualHeight / 2);
             center = matrix.Transform(center);
             // scaling back to original X and Y values, change 1.2 for original scaling
-            matrix.ScaleAt(1.2 / matrix.M11, 1.2 / matrix.M22, center.X, center.Y);
+            matrix.ScaleAt(1.5 / matrix.M11, 1.5 / matrix.M22, center.X, center.Y);
             panel.RenderTransform = new MatrixTransform(matrix);
         }
 
         private void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             //reset timer
             timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
@@ -403,9 +420,9 @@ namespace WpfApplication1
                 var width = element.ActualWidth * deltaManipulation.Scale.X * matrix.M11;
                 var height = element.ActualHeight * deltaManipulation.Scale.Y * matrix.M22;
 
-                double maxWidth = element.ActualWidth + 100;
+                double maxWidth = element.ActualWidth + 250;
                 double minWidth = element.ActualWidth - 100;
-                double maxHeight = element.ActualHeight + 100;
+                double maxHeight = element.ActualHeight + 250;
                 double minHeight = element.ActualHeight - 100;
 
                 // maximum and minimum height and width
@@ -518,11 +535,14 @@ namespace WpfApplication1
 
         public void DrawFunction(GraphicsDevice g)
         {
+
+            GlobalVariables.PrevTime = GlobalVariables.TotalTime;
             GlobalVariables.TotalTime = GlobalVariables.stopwatch.Elapsed;
             g.Clear(Microsoft.Xna.Framework.Color.Transparent);
 
             if (emitter1 != null)
             {
+                AttractMode();
                 emitter1.update();
                 emitter1.draw();
             }
@@ -598,14 +618,23 @@ namespace WpfApplication1
 
         private void rootImage_TouchMove(object sender, TouchEventArgs e)
         {
+            lastTouchTime = GlobalVariables.TotalTime;
+
             if (emitter1 != null)
             {
                 Vector2 currPosition = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
+                
+                if (!lastPosition.ContainsKey(e.TouchDevice.Id))
+                    lastPosition.Add(e.TouchDevice.Id, currPosition);
 
-                if (!lastPosition.ContainsKey(e.Device))
-                    lastPosition.Add(e.Device, currPosition);
+                Vector2 lastPos = lastPosition[e.TouchDevice.Id];
+                float distance = Vector2.Distance(lastPos, currPosition);
 
-                float distance = Vector2.Distance(lastPosition[e.Device], currPosition);
+                //if (lastPositionArray.contains(currPosition))
+                //    return;
+                //else
+                //    lastPositionArray.add(currPosition);
+
                 for (float i = 0; i <= distance; i += 1f)
                 {
                     float ratio;
@@ -613,7 +642,6 @@ namespace WpfApplication1
                         ratio = 0;
                     else
                         ratio = i / distance;
-                    Vector2 lastPos = lastPosition[e.Device];
 
                     double velocityAngle = rand.NextDouble() * Math.PI * 2;
                     float velocitySpeed = rand.Next(5, 10);
@@ -626,7 +654,7 @@ namespace WpfApplication1
                                              2000);
                 }
 
-                lastPosition[e.Device] = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
+                lastPosition[e.TouchDevice.Id] = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
             }
         }
 
@@ -638,6 +666,139 @@ namespace WpfApplication1
             ((window).Parent as Canvas).Children.Remove(window);
             timerList.Remove(sender);
             count--;
+        }
+
+        private void rootImage_TouchUp(object sender, TouchEventArgs e)
+        {
+            lastTouchTime = GlobalVariables.TotalTime;
+
+            if(lastPosition.ContainsKey(e.TouchDevice.Id))
+                lastPosition.Remove(e.TouchDevice.Id);
+        }
+
+        void AttractMode()
+        {
+            TimeSpan AttractModeStartTime = new TimeSpan(0,0,90);
+            #region Activate/Deactivate Attract Mode
+            if (GlobalVariables.TotalTime.Subtract(lastTouchTime) < new TimeSpan(0, 0, 5))
+            {
+                if (canvas.Children.IndexOf(rootImage) != 0)
+                {
+                    canvas.Children.Remove(rootImage);
+                    canvas.Children.Insert(0, rootImage);
+                    grayImage.Visibility = System.Windows.Visibility.Hidden;
+                }
+
+                return;
+            }
+
+            if (canvas.Children.IndexOf(rootImage) != canvas.Children.Count)
+            {
+                grayImage.Visibility = System.Windows.Visibility.Visible;
+                canvas.Children.Remove(rootImage);
+                canvas.Children.Insert(canvas.Children.Count, rootImage);
+            }
+            #endregion Activate/Deactivate Attract Mode
+
+            #region 0 - 1000
+            if (GlobalVariables.TotalTime.Subtract(lastTouchTime) < (AttractModeStartTime + new TimeSpan(0,0,1)))
+            {
+                grayImage.Opacity = ((GlobalVariables.TotalTime.Subtract(lastTouchTime) - AttractModeStartTime).TotalMilliseconds / 1000) * .7;
+                return;
+            }
+            #endregion 0 - 1000
+
+            #region 1000 - 5000;
+            if (GlobalVariables.TotalTime.Subtract(lastTouchTime) < (AttractModeStartTime + new TimeSpan(0,0,5)))
+            {
+                for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
+                {
+                    double singleLoopTime = 50.0; //in ms
+                    double fullSpiralTime = 5000.0; //in ms
+                    float fullSpiralRadius = 900f; //size of spiral
+
+                    float radius = fullSpiralRadius - (float)((i % fullSpiralTime) / fullSpiralTime) * fullSpiralRadius;
+                    double positionAngle = ((i % singleLoopTime) / singleLoopTime) * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius);
+
+                    Vector2 direction = position - Vector2.Zero;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(10, 15);
+                    float accelSpeed = rand.Next(10, 15);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(2000, 5000));
+                }
+
+                for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
+                {
+                    double singleLoopTime = 50.0; //in ms
+                    double fullSpiralTime = 2500.0; //in ms
+                    float fullSpiralRadius = 900f; //size of spiral
+
+                    float radius = fullSpiralRadius - (float)((i % fullSpiralTime) / fullSpiralTime) * fullSpiralRadius;
+                    double positionAngle = ((i % singleLoopTime) / singleLoopTime) * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius);
+
+                    Vector2 direction = position - Vector2.Zero;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(10, 15);
+                    float accelSpeed = rand.Next(10, 15);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(2000, 5000));
+                }
+
+                for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
+                {
+                    double singleLoopTime = 50.0; //in ms
+                    double fullSpiralTime = 1000.0; //in ms
+                    float fullSpiralRadius = 900f; //size of spiral
+
+                    float radius = fullSpiralRadius - (float)((i % fullSpiralTime) / fullSpiralTime) * fullSpiralRadius;
+                    double positionAngle = ((i % singleLoopTime) / singleLoopTime) * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius);
+
+                    Vector2 direction = position - Vector2.Zero;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(10, 15);
+                    float accelSpeed = rand.Next(10, 15);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(2000, 5000));
+                }
+                return;
+            }
+            #endregion 0 - 5000;
+
+            #region 5000 - 6000;
+            if (GlobalVariables.TotalTime.Subtract(lastTouchTime) < (AttractModeStartTime + new TimeSpan(0, 0, 6)))
+            {
+                for (int i = 0; i < 500; i++)
+                {
+                    double positionAngle = rand.NextDouble() * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle), (float)Math.Sin(positionAngle));
+
+                    Vector2 direction = position - Vector2.Zero;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(10, 15);
+                    float accelSpeed = rand.Next(500, 750);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    Vector2.Zero,
+                                    rand.Next(75, 125),
+                                    rand.Next(2000, 5000));
+                }
+                return;
+            }
+            #endregion 5000 - 6000;
+            
         }
     }
 }
