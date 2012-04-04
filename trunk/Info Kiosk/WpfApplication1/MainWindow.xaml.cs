@@ -219,7 +219,41 @@ namespace WpfApplication1
                 window.Width = 250;
                 window.IsManipulationEnabled = true;
                 window.Background = Brushes.LightSlateGray;
-                window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+                //window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+
+                double yCoordinate = LayoutRoot.ActualHeight / 2 - e.GetTouchPoint(canvas).Position.Y;
+                double xCoordinate = e.GetTouchPoint(canvas).Position.X - LayoutRoot.ActualWidth / 2;
+                // Calculate the angle of rotation
+                double angle = 0;
+                if (xCoordinate > 0 && yCoordinate >= 0) // 1st quadrant
+                {
+                    angle = Math.Atan(yCoordinate / xCoordinate);
+                    angle = 3 * Math.PI / 2 - angle;
+                }
+                if (xCoordinate < 0 && yCoordinate >= 0) // 2nd quadrant
+                {
+                    angle = Math.Atan(yCoordinate / (-1 * xCoordinate));
+                    angle = Math.PI / 2 + angle;
+                }
+                if (xCoordinate < 0 && yCoordinate <= 0) // 3rd quadrant
+                {
+                    angle = Math.Atan(yCoordinate / xCoordinate);
+                    angle = Math.PI / 2 - angle;
+                }
+                if (xCoordinate > 0 && yCoordinate <= 0) // 4rd quadrant
+                {
+                    angle = Math.Atan((-1 * yCoordinate) / xCoordinate);
+                    angle = 3 * Math.PI / 2 + angle;
+                }
+
+
+                System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(1.5, 0, 0, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+
+                matrix.RotateAt(angle * 180 / Math.PI, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+                window.RenderTransform = new MatrixTransform(matrix);
+                
+                
+                
                 window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
                 window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
                 window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
