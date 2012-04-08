@@ -463,32 +463,35 @@ namespace WpfApplication1
          */
         private void window_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
         {
-            WrapPanel element = e.OriginalSource as WrapPanel;
-            UIElementCollection windowChildren = element.Children;
-            UIElementCollection gridChildren = (windowChildren[0] as Grid).Children;
-            
-            TouchPoint touchedPoint = e.GetTouchPoint(element);
-
-            for (int i = 0; i < gridChildren.Count; i++)
+            FrameworkElement element = e.Source as FrameworkElement;
+            if (element is WrapPanel)
             {
-                if (gridChildren[i] is StackPanel && (gridChildren[i] as StackPanel).Name == "TopTab")
+                UIElementCollection windowChildren = (element as WrapPanel).Children;
+                UIElementCollection gridChildren = (windowChildren[0] as Grid).Children;
+
+                TouchPoint touchedPoint = e.GetTouchPoint(element as WrapPanel);
+
+                for (int i = 0; i < gridChildren.Count; i++)
                 {
-                    StackPanel topTabPanel = gridChildren[i] as StackPanel;
-                    HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
-                    if (result != null)
+                    if (gridChildren[i] is StackPanel && (gridChildren[i] as StackPanel).Name == "TopTab")
                     {
-                        for (int j = 0; j < gridChildren.Count; j++)
+                        StackPanel topTabPanel = gridChildren[i] as StackPanel;
+                        HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
+                        if (result != null)
                         {
-                            if (gridChildren[j] is StackPanel && (gridChildren[j] as StackPanel).Name == "InstructionsPanel")
+                            for (int j = 0; j < gridChildren.Count; j++)
                             {
-                                (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
-                                element.IsManipulationEnabled = false;
-                                e.Handled = true;
-                                break;
+                                if (gridChildren[j] is StackPanel && (gridChildren[j] as StackPanel).Name == "InstructionsPanel")
+                                {
+                                    (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
+                                    (element as WrapPanel).IsManipulationEnabled = false;
+                                    e.Handled = true;
+                                    break;
+                                }
                             }
                         }
+                        break;
                     }
-                    break;
                 }
             }
         }
