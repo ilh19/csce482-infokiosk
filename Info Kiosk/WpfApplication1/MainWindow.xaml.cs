@@ -33,7 +33,7 @@ namespace WpfApplication1
     public partial class MainWindow : Window
     {
 
-      //  public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
+        public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
         private Dictionary<UIElement, int> movingGifImage = new Dictionary<UIElement, int>();
         private Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
         private int count;
