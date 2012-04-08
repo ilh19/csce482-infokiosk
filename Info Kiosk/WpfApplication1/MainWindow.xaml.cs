@@ -33,7 +33,7 @@ namespace WpfApplication1
     public partial class MainWindow : Window
     {
 
-        public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
+      //  public static ecologylab.interactive.Utils.DisableTouchConversionToMouse disableTouchConversionToMouse = new ecologylab.interactive.Utils.DisableTouchConversionToMouse();
         private Dictionary<UIElement, int> movingGifImage = new Dictionary<UIElement, int>();
         private Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
         private int count;
@@ -217,7 +217,7 @@ namespace WpfApplication1
                 window.Name = "widgetWindow";
                 window.Height = 300;
                 window.Width = 250;
-                window.IsManipulationEnabled = true;
+                //window.IsManipulationEnabled = true;
                 window.Background = Brushes.LightSlateGray;
                 //window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
 
@@ -247,16 +247,15 @@ namespace WpfApplication1
                 }
 
 
-                System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(1.5, 0, 0, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+                System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(GlobalVariables.widgetInitScale, 0, 0, GlobalVariables.widgetInitScale, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
 
                 matrix.RotateAt(angle * 180 / Math.PI, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
                 window.RenderTransform = new MatrixTransform(matrix);
                 
-                
-                
                 window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
                 window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
                 window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
+                window.AddHandler(WrapPanel.TouchUpEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
                 window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
 
                 //add timer to window
@@ -273,34 +272,23 @@ namespace WpfApplication1
                 grid.Name = "WidgetGrid";
                 window.Children.Add(grid);
 
-                System.Windows.Shapes.Rectangle leftTab = new System.Windows.Shapes.Rectangle();
-                leftTab.Name = "LeftTab";
-                ImageBrush leftIcon = new ImageBrush();    // image background for close tab
-                leftIcon.ImageSource =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Images/leftHandle.png")
-                    );
-                leftTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(LeftTabTouch), true);
-                leftTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, -140, 0);
-                leftTab.Height = 80;
-                leftTab.Width = 35;
-                leftTab.Fill = leftIcon;
-                grid.Children.Add(leftTab);
+                //Manipulation border
+                StackPanel topTab = new StackPanel();
+                topTab.AddHandler(StackPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(topTab_TouchDown), true);
+                topTab.Height = 30;
+                topTab.Name = "TopTab";
+                topTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+                topTab.HorizontalAlignment = HorizontalAlignment.Stretch;
+                topTab.VerticalAlignment = VerticalAlignment.Top;
+                topTab.Margin = new Thickness(0);
+                ImageBrush topLabel = new ImageBrush();    // image background for top tab
+                topLabel.ImageSource =
+                        new BitmapImage(
+                            new Uri("pack://application:,,,/Images/topLabel.png")
+                        );
+                topTab.Background = topLabel;
 
-                System.Windows.Shapes.Rectangle rightTab = new System.Windows.Shapes.Rectangle();
-                rightTab.Name = "RightTab";
-                ImageBrush rightIcon = new ImageBrush();    // image background for close tab
-                rightIcon.ImageSource =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Images/rightHandle.png")
-                    );
-                rightTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RightTabTouch), true);
-                rightTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 140, 0);
-                rightTab.Height = 80;
-                rightTab.Width = 35;
-                rightTab.Fill = rightIcon;
-                grid.Children.Add(rightTab);
-
+                // Close Button
                 System.Windows.Shapes.Rectangle closeTab = new System.Windows.Shapes.Rectangle();
                 closeTab.Name = "CloseTab";
                 ImageBrush closeIcon = new ImageBrush();    // image background for close tab
@@ -308,26 +296,29 @@ namespace WpfApplication1
                     new BitmapImage(
                         new Uri("pack://application:,,,/Images/closeIcon.png")
                     );
+                closeTab.IsManipulationEnabled = false;
                 closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
-                closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 110, -165);
+                closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
                 closeTab.Height = 30;
                 closeTab.Width = 30;
                 closeTab.Fill = closeIcon;
-                grid.Children.Add(closeTab);
+                closeTab.HorizontalAlignment = HorizontalAlignment.Right;
+                topTab.Children.Add(closeTab);
+                grid.Children.Add(topTab);
 
-                System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();
-                restoreTab.Name = "RestoreTab";
-                ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
-                restoreIcon.ImageSource =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Images/resizeIcon.png")
-                    );
-                restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
-                restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -165);
-                restoreTab.Height = 30;
-                restoreTab.Width = 30;
-                restoreTab.Fill = restoreIcon;
-                grid.Children.Add(restoreTab);
+                //System.Windows.Shapes.Rectangle restoreTab = new System.Windows.Shapes.Rectangle();
+                //restoreTab.Name = "RestoreTab";
+                //ImageBrush restoreIcon = new ImageBrush();    // image background for restore tab
+                //restoreIcon.ImageSource =
+                //    new BitmapImage(
+                //        new Uri("pack://application:,,,/Images/resizeIcon.png")
+                //    );
+                //restoreTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(RestoreTabTouchDown), true);
+                //restoreTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 81, -165);
+                //restoreTab.Height = 30;
+                //restoreTab.Width = 30;
+                //restoreTab.Fill = restoreIcon;
+                //grid.Children.Add(restoreTab);
 
                 WebControl webControl = new WebControl();
                 webControl.Name = "webControl";
@@ -357,15 +348,55 @@ namespace WpfApplication1
                 webControl.SelfUpdate = false;
                 //webControl.Source = new Uri("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\transit\\01.htm");
 
-                webControl.Margin = new Thickness(0, 0, 0, 0);
+                webControl.Margin = new Thickness(0, 30, 0, 0);
                 webControl.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
                 webControl.Width = 250;
                 webControl.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
                 grid.Children.Add(webControl);
+
+                // Instructions Panel
+                StackPanel instructions = new StackPanel();
+                instructions.Name = "InstructionsPanel";
+
+                instructions.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+                instructions.Margin = new Thickness(0, 30, 0, 0);
+                instructions.HorizontalAlignment = HorizontalAlignment.Stretch;
+                instructions.VerticalAlignment = VerticalAlignment.Stretch;
+                TextBlock instructionsText = new TextBlock();
+                instructionsText.Text = "Instructions \n Resize \n Rotate \n Translate";
+                instructionsText.FontSize = 20;
+                instructions.Visibility = Visibility.Collapsed;
+                instructions.Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.5 };
+                instructions.Children.Add(instructionsText);
+                grid.Children.Add(instructions);
             }
             else
             {
                 //limit reached
+            }
+        }
+
+        void topTab_TouchUp(object sender, TouchEventArgs e)
+        {
+
+        }
+
+        void topTab_TouchDown(object sender, TouchEventArgs e)
+        {
+            UIElementCollection children = ((sender as StackPanel).Parent as Grid).Children;
+            //Enable manipulation
+            (((sender as StackPanel).Parent as Grid).Parent as WrapPanel).IsManipulationEnabled = true;
+            
+            for (int i = 0; i < children.Count; i++)
+            {
+
+                //Display instructions
+                if (children[i] is StackPanel && (children[i] as StackPanel).Name == "InstructionsPanel")
+                {
+                    (children[i] as StackPanel).Visibility = Visibility.Visible;
+                    // e.Handled = true;
+                    break;
+                }
             }
         }
 
@@ -383,7 +414,7 @@ namespace WpfApplication1
             lastTouchTime = GlobalVariables.TotalTime;
 
             //reset timer
-            WrapPanel tmpWindow = (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel);
+            WrapPanel tmpWindow = ((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel);
             timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
@@ -392,17 +423,17 @@ namespace WpfApplication1
             lastTouchTime = GlobalVariables.TotalTime;
 
             //stop timer, remove timer and remove window, decrement count
-            (timerList[(((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel)]).Stop();
+            (timerList[((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel)]).Stop();
             timerList.Remove(sender);
-            ((((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
-                    (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel));
+            (((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
+                    ((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel));
             count--;
         }
 
         /*
         * Restores the widget to the original/default size
         */
-        private void RestoreTabTouchDown(object sender, EventArgs e)
+    /*    private void RestoreTabTouchDown(object sender, EventArgs e)
         {
             lastTouchTime = GlobalVariables.TotalTime;
 
@@ -411,9 +442,9 @@ namespace WpfApplication1
             System.Windows.Point center = new System.Windows.Point(panel.ActualWidth / 2, panel.ActualHeight / 2);
             center = matrix.Transform(center);
             // scaling back to original X and Y values, change 1.2 for original scaling
-            matrix.ScaleAt(1.5 / matrix.M11, 1.5 / matrix.M22, center.X, center.Y);
+            matrix.ScaleAt(GlobalVariables.widgetInitScale / matrix.M11, GlobalVariables.widgetInitScale / matrix.M22, center.X, center.Y);
             panel.RenderTransform = new MatrixTransform(matrix);
-        }
+        }*/
 
         private void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
@@ -421,6 +452,45 @@ namespace WpfApplication1
 
             //reset timer
             timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
+        }
+
+
+        /*
+         * The touchUp event is not triggered on the topTab. It is triggered in the wrap panel (grandparent)
+         * because isManipulationEnabled is true. A hit test is perfomed with the touched point and the topTab 
+         * panel to disable the instructions panel visibility and disable isManipulationEnabled on the wrapPanel.
+         * 
+         */
+        private void window_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
+        {
+            WrapPanel element = e.OriginalSource as WrapPanel;
+            UIElementCollection windowChildren = element.Children;
+            UIElementCollection gridChildren = (windowChildren[0] as Grid).Children;
+            
+            TouchPoint touchedPoint = e.GetTouchPoint(element);
+
+            for (int i = 0; i < gridChildren.Count; i++)
+            {
+                if (gridChildren[i] is StackPanel && (gridChildren[i] as StackPanel).Name == "TopTab")
+                {
+                    StackPanel topTabPanel = gridChildren[i] as StackPanel;
+                    HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
+                    if (result != null)
+                    {
+                        for (int j = 0; j < gridChildren.Count; j++)
+                        {
+                            if (gridChildren[j] is StackPanel && (gridChildren[j] as StackPanel).Name == "InstructionsPanel")
+                            {
+                                (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
+                                element.IsManipulationEnabled = false;
+                                e.Handled = true;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
         /**
@@ -455,9 +525,9 @@ namespace WpfApplication1
                 var height = element.ActualHeight * deltaManipulation.Scale.Y * matrix.M22;
 
                 double maxWidth = element.ActualWidth + 250;
-                double minWidth = element.ActualWidth - 100;
+                double minWidth = element.ActualWidth - 50;
                 double maxHeight = element.ActualHeight + 250;
-                double minHeight = element.ActualHeight - 100;
+                double minHeight = element.ActualHeight - 50;
 
                 // maximum and minimum height and width
                 if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight)
@@ -473,7 +543,7 @@ namespace WpfApplication1
                 ((MatrixTransform)element.RenderTransform).Matrix = matrix;
 
                 e.Handled = true;
-
+                
                 // We are only checking boundaries during inertia 
                 // in real world, we would check all the time 
                 if (e.IsInertial)

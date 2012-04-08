@@ -21,6 +21,7 @@ namespace WpfApplication1
         public static TimeSpan PrevTime;
         public static ContentBuilder contentBuilder = new ContentBuilder();
         public static ServiceContainer serviceContainer = new ServiceContainer();
+        public static double widgetInitScale = 1.5;
     }
 
     static class Constants
