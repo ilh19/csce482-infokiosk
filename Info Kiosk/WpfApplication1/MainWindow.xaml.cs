@@ -527,6 +527,10 @@ namespace WpfApplication1
                 var width = element.ActualWidth * deltaManipulation.Scale.X * matrix.M11;
                 var height = element.ActualHeight * deltaManipulation.Scale.Y * matrix.M22;
 
+                // widget has been rotated >180 degrees
+                if (width < 0) width *= -1;
+                if (height < 0) height *= -1;
+
                 double maxWidth = element.ActualWidth + 250;
                 double minWidth = element.ActualWidth - 50;
                 double maxHeight = element.ActualHeight + 250;
