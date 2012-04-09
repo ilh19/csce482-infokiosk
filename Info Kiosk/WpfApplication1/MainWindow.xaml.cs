@@ -218,9 +218,10 @@ namespace WpfApplication1
                 window.Height = 300;
                 window.Width = 250;
                 //window.IsManipulationEnabled = true;
-                window.Background = Brushes.LightSlateGray;
-                //window.RenderTransform = new MatrixTransform(1.5, 0.5, -0.5, 1.5, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+                System.Windows.Media.Color maroon = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#2E0000");
+                window.Background = new SolidColorBrush(maroon);
 
+                
                 double yCoordinate = LayoutRoot.ActualHeight / 2 - e.GetTouchPoint(canvas).Position.Y;
                 double xCoordinate = e.GetTouchPoint(canvas).Position.X - LayoutRoot.ActualWidth / 2;
                 // Calculate the angle of rotation
@@ -273,20 +274,37 @@ namespace WpfApplication1
                 window.Children.Add(grid);
 
                 //Manipulation border
-                StackPanel topTab = new StackPanel();
-                topTab.AddHandler(StackPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(topTab_TouchDown), true);
+                DockPanel topTab = new DockPanel();
+                topTab.AddHandler(DockPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(topTab_TouchDown), true);
                 topTab.Height = 30;
                 topTab.Name = "TopTab";
                 topTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
-                topTab.HorizontalAlignment = HorizontalAlignment.Stretch;
+                //topTab.HorizontalAlignment = HorizontalAlignment.Stretch;
                 topTab.VerticalAlignment = VerticalAlignment.Top;
                 topTab.Margin = new Thickness(0);
-                ImageBrush topLabel = new ImageBrush();    // image background for top tab
+               /* ImageBrush topLabel = new ImageBrush();    // image background for top tab
                 topLabel.ImageSource =
                         new BitmapImage(
                             new Uri("pack://application:,,,/Images/topLabel.png")
                         );
-                topTab.Background = topLabel;
+                topTab.Background = topLabel;*/
+                // Spacer
+                System.Windows.Shapes.Rectangle spacer = new System.Windows.Shapes.Rectangle();
+                spacer.Height = 30;
+                spacer.Width = 30;
+                spacer.HorizontalAlignment = HorizontalAlignment.Left;
+                spacer.VerticalAlignment = VerticalAlignment.Center;
+                topTab.Children.Add(spacer);
+
+                //manipulation text
+                TextBlock manipulationText = new TextBlock();
+                manipulationText.Text = "Touch here to manipulate";
+                manipulationText.FontSize = 14;
+                manipulationText.FontFamily = new FontFamily("Comic Sans MS");
+                manipulationText.Foreground = Brushes.White;
+                manipulationText.HorizontalAlignment = HorizontalAlignment.Center;
+                manipulationText.VerticalAlignment = VerticalAlignment.Center;
+                topTab.Children.Add(manipulationText);
 
                 // Close Button
                 System.Windows.Shapes.Rectangle closeTab = new System.Windows.Shapes.Rectangle();
@@ -298,11 +316,12 @@ namespace WpfApplication1
                     );
                 closeTab.IsManipulationEnabled = false;
                 closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
-                closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+                //closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
                 closeTab.Height = 30;
                 closeTab.Width = 30;
                 closeTab.Fill = closeIcon;
                 closeTab.HorizontalAlignment = HorizontalAlignment.Right;
+                closeTab.VerticalAlignment = VerticalAlignment.Center;
                 topTab.Children.Add(closeTab);
                 grid.Children.Add(topTab);
 
@@ -383,9 +402,9 @@ namespace WpfApplication1
 
         void topTab_TouchDown(object sender, TouchEventArgs e)
         {
-            UIElementCollection children = ((sender as StackPanel).Parent as Grid).Children;
+            UIElementCollection children = ((sender as DockPanel).Parent as Grid).Children;
             //Enable manipulation
-            (((sender as StackPanel).Parent as Grid).Parent as WrapPanel).IsManipulationEnabled = true;
+            (((sender as DockPanel).Parent as Grid).Parent as WrapPanel).IsManipulationEnabled = true;
             
             for (int i = 0; i < children.Count; i++)
             {
@@ -414,7 +433,7 @@ namespace WpfApplication1
             lastTouchTime = GlobalVariables.TotalTime;
 
             //reset timer
-            WrapPanel tmpWindow = ((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel);
+            WrapPanel tmpWindow = ((((sender as System.Windows.Shapes.Rectangle).Parent as DockPanel).Parent as Grid).Parent as WrapPanel);
             timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
@@ -423,10 +442,10 @@ namespace WpfApplication1
             lastTouchTime = GlobalVariables.TotalTime;
 
             //stop timer, remove timer and remove window, decrement count
-            (timerList[((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel)]).Stop();
+            (timerList[((((sender as System.Windows.Shapes.Rectangle).Parent as DockPanel).Parent as Grid).Parent as WrapPanel)]).Stop();
             timerList.Remove(sender);
-            (((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
-                    ((((sender as System.Windows.Shapes.Rectangle).Parent as StackPanel).Parent as Grid).Parent as WrapPanel));
+            (((((sender as System.Windows.Shapes.Rectangle).Parent as DockPanel).Parent as Grid).Parent as WrapPanel).Parent as Canvas).Children.Remove(
+                    ((((sender as System.Windows.Shapes.Rectangle).Parent as DockPanel).Parent as Grid).Parent as WrapPanel));
             count--;
         }
 
@@ -473,9 +492,9 @@ namespace WpfApplication1
 
                 for (int i = 0; i < gridChildren.Count; i++)
                 {
-                    if (gridChildren[i] is StackPanel && (gridChildren[i] as StackPanel).Name == "TopTab")
+                    if (gridChildren[i] is DockPanel && (gridChildren[i] as DockPanel).Name == "TopTab")
                     {
-                        StackPanel topTabPanel = gridChildren[i] as StackPanel;
+                        DockPanel topTabPanel = gridChildren[i] as DockPanel;
                         HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
                         if (result != null)
                         {
@@ -540,6 +559,21 @@ namespace WpfApplication1
                 if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight)
                 {
                     matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
+
+                  /*  if (element is WrapPanel)
+                    {
+                        UIElementCollection windowChildren = (element as WrapPanel).Children;
+                        UIElementCollection children = (windowChildren[0] as Grid).Children;  //get the grid
+                        for (int i = 0; i < children.Count; i++)
+                        {
+                            if (children[i] is StackPanel && (children[i] as StackPanel).Name == "TopTab")
+                            {
+                                var instructionsMatrix = ((MatrixTransform)(children[i] as StackPanel).RenderTransform).Matrix;
+                                instructionsMatrix.Scale(1, 1 / deltaManipulation.Scale.Y);
+                                ((MatrixTransform)(children[i] as StackPanel).RenderTransform).Matrix = instructionsMatrix;
+                            }
+                        }
+                    }*/
                 }
 
                 // Rotation 
