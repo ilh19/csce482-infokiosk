@@ -58,43 +58,15 @@ namespace WpfApplication1
             grid.Name = "WidgetGrid";
             window.Children.Add(grid);
 
-            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.PanningMode = PanningMode.VerticalOnly;
-            scroller.IsManipulationEnabled = false;
-            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
-            grid.Children.Add(scroller);
-
             System.Windows.Media.Color maroon = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#2E0000");
             window.Background = new SolidColorBrush(maroon);
 
             double yCoordinate = LayoutRoot.ActualHeight / 2 - e.GetTouchPoint(canvas).Position.Y;
             double xCoordinate = e.GetTouchPoint(canvas).Position.X - LayoutRoot.ActualWidth / 2;
-            // Calculate the angle of rotation
-            double angle = 0;
-            if (xCoordinate > 0 && yCoordinate >= 0) // 1st quadrant
-            {
-                angle = Math.Atan(yCoordinate / xCoordinate);
-                angle = 3 * Math.PI / 2 - angle;
-            }
-            if (xCoordinate < 0 && yCoordinate >= 0) // 2nd quadrant
-            {
-                angle = Math.Atan(yCoordinate / (-1 * xCoordinate));
-                angle = Math.PI / 2 + angle;
-            }
-            if (xCoordinate < 0 && yCoordinate <= 0) // 3rd quadrant
-            {
-                angle = Math.Atan(yCoordinate / xCoordinate);
-                angle = Math.PI / 2 - angle;
-            }
-            if (xCoordinate > 0 && yCoordinate <= 0) // 4rd quadrant
-            {
-                angle = Math.Atan((-1 * yCoordinate) / xCoordinate);
-                angle = 3 * Math.PI / 2 + angle;
-            }
 
             System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(GlobalVariables.widgetInitScale, 0, 0, GlobalVariables.widgetInitScale, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
 
-            matrix.RotateAt(angle * 180 / Math.PI, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+            matrix.RotateAt(CalculateRotationAngle(xCoordinate, yCoordinate), e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
             window.RenderTransform = new MatrixTransform(matrix);
 
             //window.Background = System.Windows.Media.Brushes.LightSlateGray;
@@ -114,15 +86,9 @@ namespace WpfApplication1
             topTab.Height = 30;
             topTab.Name = "TopTab";
             topTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
-            //topTab.HorizontalAlignment = HorizontalAlignment.Stretch;
             topTab.VerticalAlignment = VerticalAlignment.Top;
             topTab.Margin = new Thickness(0);
-            /* ImageBrush topLabel = new ImageBrush();    // image background for top tab
-             topLabel.ImageSource =
-                     new BitmapImage(
-                         new Uri("pack://application:,,,/Images/topLabel.png")
-                     );
-             topTab.Background = topLabel;*/
+
             // Spacer
             System.Windows.Shapes.Rectangle spacer = new System.Windows.Shapes.Rectangle();
             spacer.Height = 30;
@@ -151,7 +117,6 @@ namespace WpfApplication1
                 );
             closeTab.IsManipulationEnabled = false;
             closeTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(CloseTabTouchDown), true);
-            //closeTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             closeTab.Height = 30;
             closeTab.Width = 30;
             closeTab.Fill = closeIcon;
@@ -160,7 +125,17 @@ namespace WpfApplication1
             topTab.Children.Add(closeTab);
             grid.Children.Add(topTab);
 
-            //Timer//
+            // Panning Window
+            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalAlignment = VerticalAlignment.Bottom;
+            scroller.Margin = new Thickness(0, 30, 0, 0);
+            scroller.PanningMode = PanningMode.VerticalOnly;
+            scroller.IsManipulationEnabled = false;
+            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
+            grid.Children.Add(scroller);
+
+            //Timer
             newTimer.Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
             newTimer.Tick += new EventHandler(onElapsedTimer);
             newTimer.Tag = window;
@@ -184,6 +159,38 @@ namespace WpfApplication1
             grid.Children.Add(instructions);
         }
 
+        /*
+         * Determines the angle of rotation for the window when a menu item is dragged and dropped to 
+         * a specific location in the screen. 
+         * 
+         * Returns angle in radians
+         */
+        private double CalculateRotationAngle(double xCoordinate, double yCoordinate)
+        {
+            double angle = 0;
+            if (xCoordinate > 0 && yCoordinate >= 0) // 1st quadrant
+            {
+                angle = Math.Atan(yCoordinate / xCoordinate);
+                angle = 3 * Math.PI / 2 - angle;
+            }
+            if (xCoordinate < 0 && yCoordinate >= 0) // 2nd quadrant
+            {
+                angle = Math.Atan(yCoordinate / (-1 * xCoordinate));
+                angle = Math.PI / 2 + angle;
+            }
+            if (xCoordinate < 0 && yCoordinate <= 0) // 3rd quadrant
+            {
+                angle = Math.Atan(yCoordinate / xCoordinate);
+                angle = Math.PI / 2 - angle;
+            }
+            if (xCoordinate > 0 && yCoordinate <= 0) // 4rd quadrant
+            {
+                angle = Math.Atan((-1 * yCoordinate) / xCoordinate);
+                angle = 3 * Math.PI / 2 + angle;
+            }
+            return angle * 180 / Math.PI;
+        }
+
         protected void OnScrollDataReceived(object sender, ScrollDataEventArgs e)
         {
             sdata = e.ScrollData;
@@ -196,8 +203,6 @@ namespace WpfApplication1
             imageHeight = e.ScrollData.ContentHeight;
             finishedResizing = true;
         }
-
-
 
         protected void OnFinishLoading(object sender, EventArgs e)
         {
