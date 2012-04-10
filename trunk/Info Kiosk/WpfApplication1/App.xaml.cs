@@ -5,6 +5,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace WpfApplication1
 {
@@ -22,6 +23,10 @@ namespace WpfApplication1
         public static ContentBuilder contentBuilder = new ContentBuilder();
         public static ServiceContainer serviceContainer = new ServiceContainer();
         public static double widgetInitScale = 1.5;
+        public static UIElement last;
+        public static int count;
+        public static Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
+        public static TimeSpan lastTouchTime;
     }
 
     static class Constants
