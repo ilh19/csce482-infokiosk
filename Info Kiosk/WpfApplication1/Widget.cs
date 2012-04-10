@@ -238,24 +238,6 @@ namespace WpfApplication1
             }
         }
 
-        protected void LeftTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
-        {
-            GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
-
-            //reset timer
-            WrapPanel tmpWindow = (((sender as System.Windows.Shapes.Rectangle).Parent as Grid).Parent as WrapPanel);
-            GlobalVariables.timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
-        }
-
-        protected void RightTabTouch(object sender, System.Windows.Input.TouchEventArgs e)
-        {
-            GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
-
-            //reset timer
-            WrapPanel tmpWindow = ((((sender as System.Windows.Shapes.Rectangle).Parent as DockPanel).Parent as Grid).Parent as WrapPanel);
-            GlobalVariables.timerList[tmpWindow].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
-        }
-
         protected void CloseTabTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
@@ -268,12 +250,6 @@ namespace WpfApplication1
             GlobalVariables.count--;
         }
 
-
-
-        /*
-        * Restores the widget to the original/default size
-        */
-
         protected void window_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
@@ -281,12 +257,12 @@ namespace WpfApplication1
             GlobalVariables.timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
         }
 
-        /**
-         * This function manipulates the matrix transform of the widget. 
-         * It performs scaling, rotation, and translation transformations. 
+        /*
+         * The touchUp event is not triggered on the topTab. It is triggered in the wrap panel (grandparent)
+         * because isManipulationEnabled is true. A hit test is perfomed with the touched point and the topTab 
+         * panel to disable the instructions panel visibility and disable isManipulationEnabled on the wrapPanel.
          * 
          */
-
         protected void window_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
         {
             FrameworkElement element = e.Source as FrameworkElement;
@@ -322,6 +298,11 @@ namespace WpfApplication1
             }
         }
 
+        /**
+         * This function manipulates the matrix transform of the widget. 
+         * It performs scaling, rotation, and translation transformations. 
+         * 
+         */
         protected void window_ManipulationDelta(object sender, System.Windows.Input.ManipulationDeltaEventArgs e)
         {
             //this just gets the source. 
@@ -411,8 +392,7 @@ namespace WpfApplication1
             }
         }
 
-        protected void ManipulationBoundaryFeedbackHandler
-         (object sender, ManipulationBoundaryFeedbackEventArgs e)
+        protected void ManipulationBoundaryFeedbackHandler(object sender, ManipulationBoundaryFeedbackEventArgs e)
         {
             e.Handled = true;
         }
