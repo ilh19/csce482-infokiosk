@@ -16,8 +16,19 @@ apps - chandler
 
 
 
+
+
 later...
 
 multi-touch in awesomium
 Implement restore to default size
 default webcontrol to larger size, so resize looks better +
+
+
+
+Attract Mode
+Window Title Bars (and all functionality: rotation, resize etc) remove handles
+multiple users 
+map app needs more routes
+
+
