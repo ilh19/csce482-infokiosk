@@ -44,6 +44,7 @@ namespace WpfApplication1
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
             // if we're not in design mode, initialize the graphics device
             if (DesignerProperties.GetIsInDesignMode(this) == false)
             {
@@ -162,9 +163,6 @@ namespace WpfApplication1
 
             //Optional 
             //circle.ManipulationCompleted += new EventHandler<ManipulationCompletedEventArgs>(rect2_ManipulationCompleted);
-
-
-
         }
 
         void rect2_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
@@ -573,7 +571,7 @@ namespace WpfApplication1
 
         void AttractMode()
         {
-            TimeSpan AttractModeStartTime = new TimeSpan(0,0,90);
+            TimeSpan AttractModeStartTime = new TimeSpan(0, 0, 90);
             #region Activate/Deactivate Attract Mode
             if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < new TimeSpan(0, 0, 5))
             {
@@ -693,7 +691,23 @@ namespace WpfApplication1
                 return;
             }
             #endregion 5000 - 6000;
-            
+
+            #region 6000 - 9000
+            if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < (AttractModeStartTime + new TimeSpan(0, 0, 9)))
+            {
+                video.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+                video.Visibility = Visibility.Visible;
+                video.Volume = 1;
+                video.Play();
+            }
+            #endregion 6000 - 9000
+
+        }
+
+        private void video_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            video.Visibility = Visibility.Hidden;
+            video.Position = TimeSpan.Zero;
         }
     }
 }

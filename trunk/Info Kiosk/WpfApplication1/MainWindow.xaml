@@ -21,6 +21,7 @@
             <local:GifImage x:Name="map"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="808" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <local:GifImage x:Name="dining" HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="702" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
             <Image x:Name="grayImage" Source="Images/gray.png" Opacity="0"  Visibility="Hidden"/>
+            <MediaElement x:Name="video" Volume="0" Visibility="Hidden" Source="Video/sample.mov"  Width="1600" Height="1200" HorizontalAlignment="Center" VerticalAlignment="Top" MediaEnded="video_MediaEnded"  />
 
         </Canvas>
     </Grid>
