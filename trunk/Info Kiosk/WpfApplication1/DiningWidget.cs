@@ -31,40 +31,52 @@ namespace WpfApplication1
         public DiningWidget(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
             : base(c,g,e)
         {
-
-            canvas = c;
-            //using (webView = WebCore.CreateWebView(300, 800))
-            webView = WebCore.CreateWebView(300, 4000);
+            //webView = WebCore.CreateWebView(300, 4000);
+            //webView.LoadURL("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\dining.htm");
+            //webView.LoadCompleted += OnFinishLoading;
+            //webView.ScrollDataReceived += new ScrollDataReceivedEventHandler(OnScrollDataReceived);
+            //
+            //while (!finishedLoading)
             //{
-            webView.LoadURL("C:\\infoKiosk\\KioskRepository\\Info Kiosk\\WpfApplication1\\webpages\\dining.htm");
-            webView.LoadCompleted += OnFinishLoading;
-            webView.ScrollDataReceived += new ScrollDataReceivedEventHandler(OnScrollDataReceived);
-
-            while (!finishedLoading)
-            {
-                Thread.Sleep(100);
-                WebCore.Update();
-            }
-
-            //webView.Render().SaveToJPEG("test.jpg", 10);
-
-            // webView.RequestScrollData();
-            // while (!finishedResizing)
-            // {
-            //     Thread.Sleep(100);
-            //     WebCore.Update();
-            // }
-
-            System.Drawing.Bitmap bmap = new System.Drawing.Bitmap(300, 4000);
-            webView.Render().DrawBuffer(ref bmap);
-            Image image = new Image();
-            image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
-                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-            image.Height = 4000;
-            image.Width = 300;
-            image.IsManipulationEnabled = false;
-            scroller.Content = image;
+            //    Thread.Sleep(100);
+            //    WebCore.Update();
             //}
+
+            //System.Drawing.Bitmap bmap = new System.Drawing.Bitmap(300, 4000);
+            //webView.Render().DrawBuffer(ref bmap);
+            //Image image = new Image();
+            //image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
+            //                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            //image.Height = 4000;
+            //image.Width = 300;
+            //image.IsManipulationEnabled = false;
+            //scroller.Content = image;
+            //}
+
+            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            scroller.VerticalAlignment = VerticalAlignment.Bottom;
+            scroller.Margin = new Thickness(0, 30, 0, 0);
+            scroller.PanningMode = PanningMode.VerticalOnly;
+            scroller.IsManipulationEnabled = false;
+            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
+
+            StackPanel list = new StackPanel();
+            //list.Height = 270;
+
+            DiningItem item1 = new DiningItem("test.png");
+            list.Children.Add(item1);
+            DiningItem item2 = new DiningItem("test.png");
+            list.Children.Add(item2);
+            DiningItem item3 = new DiningItem("test.png");
+            list.Children.Add(item3);
+            DiningItem item4 = new DiningItem("test.png");
+            list.Children.Add(item4);
+
+            scroller.Content = list;
+            grid.Children.Add(scroller);
+
+            grid.Children.Add(instructions);
         }
 
     }

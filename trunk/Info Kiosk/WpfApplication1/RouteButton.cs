@@ -1,4 +1,6 @@
-﻿using Awesomium.Core;
+﻿using System;
+using System.Collections.Generic;
+using Awesomium.Core;
 using Awesomium.Windows.Controls;
 using Awesomium.Windows.Forms;
 using System.Linq;
@@ -21,24 +23,30 @@ using System.ComponentModel;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using System.Threading;
-using Microsoft.Maps.MapControl.WPF;
 
 namespace WpfApplication1
 {
-
-    class MapWidget : Widget
+    class RouteButton : Button
     {
-        protected Map map = new Map();
-
-
-        public MapWidget(Canvas c, Grid g, System.Windows.Input.TouchEventArgs e)
-          : base(c,g,e)
+        Image img = new Image();
+        public Image Image
         {
-            map.VerticalAlignment = VerticalAlignment.Bottom;
-            map.Margin = new Thickness(0, 30, 0, 0);
-            map.Height = 500;
-            grid.Children.Add(map);
-            grid.Children.Add(instructions);
+            get { return img;  }
+            set { img = value; }
         }
+
+        public RouteButton(String imgName, String buttonTitle)
+            : base()
+        {
+            var uriSource = new Uri("pack://application:,,,/Images/" + imgName);
+            img.Source = new BitmapImage(uriSource);
+
+            FontSize = 6;
+            Content = buttonTitle;
+        }
+
+
     }
+
+
 }
