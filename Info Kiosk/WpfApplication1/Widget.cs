@@ -41,7 +41,6 @@ namespace WpfApplication1
 
         private int touchesOnTopPanel = 0;
 
-        protected ScrollData sdata;
 
         public Widget(Canvas c, Grid g, System.Windows.Input.TouchEventArgs e)
         {
