@@ -29,31 +29,21 @@ namespace WpfApplication1
 {
     class WeatherWidget : Widget
     {
+        protected WebView webView;
+
         public WeatherWidget(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
             : base(c, g, e)
         {
 
-            //using (webView = WebCore.CreateWebView(300, 800))
             webView = WebCore.CreateWebView(300, 700);
-            //{
             webView.LoadURL("http://theshinyspoonpay.appspot.com");
             webView.LoadCompleted += OnFinishLoading;
-            webView.ScrollDataReceived += new ScrollDataReceivedEventHandler(OnScrollDataReceived);
 
             while (!finishedLoading)
             {
                 Thread.Sleep(100);
                 WebCore.Update();
             }
-
-            //webView.Render().SaveToJPEG("test.jpg", 10);
-
-            // webView.RequestScrollData();
-            // while (!finishedResizing)
-            // {
-            //     Thread.Sleep(100);
-            //     WebCore.Update();
-            // }
 
             System.Drawing.Bitmap bmap = new System.Drawing.Bitmap(300, 700);
             webView.Render().DrawBuffer(ref bmap);
@@ -66,6 +56,16 @@ namespace WpfApplication1
             scroller.Content = image;
             //}
 
+            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalAlignment = VerticalAlignment.Bottom;
+            scroller.Margin = new Thickness(0, 30, 0, 0);
+            scroller.PanningMode = PanningMode.VerticalOnly;
+            scroller.IsManipulationEnabled = false;
+            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
+            grid.Children.Add(scroller);
+
+            grid.Children.Add(instructions);
    
         }
 

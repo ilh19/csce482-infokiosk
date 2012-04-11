@@ -31,14 +31,12 @@ namespace WpfApplication1
         protected Grid LayoutRoot;
         protected WrapPanel window = new WrapPanel();
         protected ScrollViewer scroller = new ScrollViewer();
-        public StackPanel list = new StackPanel();
-
+        protected Grid contentGrid;
+        protected StackPanel instructions = new StackPanel();
         protected DispatcherTimer newTimer = new DispatcherTimer();
-        protected WebView webView;
         protected Canvas canvas;
         protected bool finishedLoading;
-        protected bool finishedResizing;
-        protected int imageHeight;
+        protected Grid grid = new Grid();
         UIElement last;
 
         private int touchesOnTopPanel = 0;
@@ -54,7 +52,6 @@ namespace WpfApplication1
             window.Height = 300;
             window.Width = 250;
 
-            Grid grid = new Grid();
             grid.Name = "WidgetGrid";
             window.Children.Add(grid);
 
@@ -126,16 +123,6 @@ namespace WpfApplication1
             topTab.Children.Add(closeTab);
             grid.Children.Add(topTab);
 
-            // Panning Window
-            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalAlignment = VerticalAlignment.Bottom;
-            scroller.Margin = new Thickness(0, 30, 0, 0);
-            scroller.PanningMode = PanningMode.VerticalOnly;
-            scroller.IsManipulationEnabled = false;
-            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
-            grid.Children.Add(scroller);
-
             //Timer
             newTimer.Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
             newTimer.Tick += new EventHandler(onElapsedTimer);
@@ -144,9 +131,8 @@ namespace WpfApplication1
             GlobalVariables.timerList[window] = newTimer;
 
             // Instructions Panel
-            StackPanel instructions = new StackPanel();
+            
             instructions.Name = "InstructionsPanel";
-
             instructions.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             instructions.Margin = new Thickness(0, 30, 0, 0);
             instructions.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -157,7 +143,7 @@ namespace WpfApplication1
             instructions.Visibility = Visibility.Collapsed;
             instructions.Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.5 };
             instructions.Children.Add(instructionsText);
-            grid.Children.Add(instructions);
+           
         }
 
         /*
@@ -190,19 +176,6 @@ namespace WpfApplication1
                 angle = 3 * Math.PI / 2 + angle;
             }
             return angle * 180 / Math.PI;
-        }
-
-        protected void OnScrollDataReceived(object sender, ScrollDataEventArgs e)
-        {
-            sdata = e.ScrollData;
-            webView.Resize(e.ScrollData.ContentWidth, e.ScrollData.ContentHeight);
-            while (webView.IsResizing)
-            {
-
-            }
-            webView.Render().SaveToJPEG("blabla1.jpg", 100);
-            imageHeight = e.ScrollData.ContentHeight;
-            finishedResizing = true;
         }
 
         protected void OnFinishLoading(object sender, EventArgs e)

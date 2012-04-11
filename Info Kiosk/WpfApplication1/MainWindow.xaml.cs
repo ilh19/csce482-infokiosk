@@ -74,7 +74,7 @@ namespace WpfApplication1
             fire = contentManager.Load<Texture2D>("fire");
             blueFire = contentManager.Load<Texture2D>("blue fire");
 
-            emitter1 = new ParticleEmitter(100000, particleEffect, fire2);
+            emitter1 = new ParticleEmitter(300000, particleEffect, fire2);
             emitter1.effectTechnique = "FadeAtXPercent";
             emitter1.fadeStartPercent = .1f;
         }
@@ -211,7 +211,7 @@ namespace WpfApplication1
             {
                 if ((sender as GifImage).Name == "map")
                 {
-                    Widget wdgt = new TransitWidget(canvas,LayoutRoot, e);
+                    Widget wdgt = new MapWidget(canvas,LayoutRoot, e);
                 }
                 else if ((sender as GifImage).Name == "transit")
                 {
@@ -394,15 +394,25 @@ namespace WpfApplication1
 
         void AttractMode()
         {
-            TimeSpan AttractModeStartTime = new TimeSpan(0, 0, 90);
+            TimeSpan AttractModeRunningTime = GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime);
+            TimeSpan AttractModeStartTime = new TimeSpan(0,0,5);
             #region Activate/Deactivate Attract Mode
-            if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < new TimeSpan(0, 0, 5))
+            if (AttractModeRunningTime < AttractModeStartTime)
             {
                 if (canvas.Children.IndexOf(rootImage) != 0)
                 {
+                    canvas.Children.Remove(grayImage);
+                    canvas.Children.Insert(0, grayImage);
+                    canvas.Children.Remove(video);
+                    canvas.Children.Insert(0, video);
                     canvas.Children.Remove(rootImage);
                     canvas.Children.Insert(0, rootImage);
                     grayImage.Visibility = System.Windows.Visibility.Hidden;
+
+                    video.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+                    video.Visibility = Visibility.Hidden;
+                    //video.Position = TimeSpan.Zero;
+                    video.Stop();
                 }
 
                 return;
@@ -411,21 +421,33 @@ namespace WpfApplication1
             if (canvas.Children.IndexOf(rootImage) != canvas.Children.Count)
             {
                 grayImage.Visibility = System.Windows.Visibility.Visible;
+                canvas.Children.Remove(grayImage);
+                canvas.Children.Insert(canvas.Children.Count, grayImage);
+                canvas.Children.Remove(video);
+                canvas.Children.Insert(canvas.Children.Count, video);
                 canvas.Children.Remove(rootImage);
                 canvas.Children.Insert(canvas.Children.Count, rootImage);
+                //video_MediaEnded(null, null);
+                //video.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+                //video.Stop();
+                //video.Volume = 0.0f;
+                //video.Visibility = Visibility.Hidden;
             }
             #endregion Activate/Deactivate Attract Mode
 
+            //Fade Screen Out
             #region 0 - 1000
-            if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < (AttractModeStartTime + new TimeSpan(0, 0, 1)))
+            if (AttractModeRunningTime < (AttractModeStartTime + new TimeSpan(0, 0, 1)))
             {
                 grayImage.Opacity = ((GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) - AttractModeStartTime).TotalMilliseconds / 1000) * .7;
                 return;
             }
             #endregion 0 - 1000
 
+            //Swirl
             #region 1000 - 5000;
-            if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < (AttractModeStartTime + new TimeSpan(0, 0, 5)))
+            TimeSpan FiveSeconds = new TimeSpan(0, 0, 5);
+            if (AttractModeRunningTime < (AttractModeStartTime + FiveSeconds))
             {
                 for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
                 {
@@ -445,7 +467,7 @@ namespace WpfApplication1
                                     direction * accelSpeed,
                                     position,
                                     rand.Next(15, 20),
-                                    rand.Next(2000, 5000));
+                                    (int)FiveSeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds + rand.Next(0, 500));
                 }
 
                 for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
@@ -466,7 +488,7 @@ namespace WpfApplication1
                                     direction * accelSpeed,
                                     position,
                                     rand.Next(15, 20),
-                                    rand.Next(2000, 5000));
+                                    (int)FiveSeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds + rand.Next(0, 500));
                 }
 
                 for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
@@ -487,14 +509,16 @@ namespace WpfApplication1
                                     direction * accelSpeed,
                                     position,
                                     rand.Next(15, 20),
-                                    rand.Next(2000, 5000));
+                                    (int)FiveSeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds + rand.Next(0, 500));
                 }
                 return;
             }
-            #endregion 0 - 5000;
+            #endregion 1000 - 5000;
 
+            //Explode
             #region 5000 - 6000;
-            if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < (AttractModeStartTime + new TimeSpan(0, 0, 6)))
+            TimeSpan SixSeconds = new TimeSpan(0, 0, 6);
+            if (AttractModeRunningTime < (AttractModeStartTime + SixSeconds))
             {
                 for (int i = 0; i < 500; i++)
                 {
@@ -509,28 +533,197 @@ namespace WpfApplication1
                                     direction * accelSpeed,
                                     Vector2.Zero,
                                     rand.Next(75, 125),
-                                    rand.Next(2000, 5000));
+                                    (int)SixSeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds + rand.Next(500,2000));
                 }
                 return;
             }
             #endregion 5000 - 6000;
 
-            #region 6000 - 9000
-            if (GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime) < (AttractModeStartTime + new TimeSpan(0, 0, 9)))
+            //Crazy Swirl
+            #region 6000 - 20000;
+            TimeSpan TwentySeconds = new TimeSpan(0, 0, 20);
+            if (AttractModeRunningTime < (AttractModeStartTime + TwentySeconds))
+            {
+                for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
+                {
+                    double singleLoopTime = 1000.0; //in ms
+                    double fullSpiralTime = 5000.0; //in ms
+                    float fullSpiralRadius = 900f; //size of spiral
+
+                    float radius = fullSpiralRadius - (float)((i % fullSpiralTime) / fullSpiralTime) * fullSpiralRadius;
+                    double positionAngle = ((i % singleLoopTime) / singleLoopTime) * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius);
+
+                    Vector2 direction = Vector2.Zero - position;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(625, 650);
+                    float accelSpeed = rand.Next(625, 650);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    -direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    //rand.Next(10000, 15050));
+                                    Math.Max(5000,(int)TwentySeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds) + rand.Next(0, 500));
+                }
+
+                for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
+                {
+                    double singleLoopTime = 900.0; //in ms
+                    double fullSpiralTime = 5000.0; //in ms
+                    float fullSpiralRadius = 1200f; //size of spiral
+
+                    float radius = fullSpiralRadius - (float)((i % fullSpiralTime) / fullSpiralTime) * fullSpiralRadius;
+                    double positionAngle = ((i % singleLoopTime) / singleLoopTime) * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius);
+
+                    Vector2 direction = Vector2.Zero - position;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(625, 650);
+                    float accelSpeed = rand.Next(600, 650);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    -direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    //rand.Next(10000, 15050));
+                                    Math.Max(5000, (int)TwentySeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds) + rand.Next(0, 500));
+                }
+
+
+                for (double i = GlobalVariables.PrevTime.TotalMilliseconds; i < GlobalVariables.TotalTime.TotalMilliseconds; i += .25)
+                {
+                    double singleLoopTime = 1500.0; //in ms
+                    double fullSpiralTime = 5000.0; //in ms
+                    float fullSpiralRadius = 1500f; //size of spiral
+
+                    float radius = fullSpiralRadius - (float)((i % fullSpiralTime) / fullSpiralTime) * fullSpiralRadius;
+                    double positionAngle = ((i % singleLoopTime) / singleLoopTime) * Math.PI * 2;
+                    Vector2 position = new Vector2((float)Math.Cos(positionAngle) * radius, (float)Math.Sin(positionAngle) * radius);
+
+                    Vector2 direction = Vector2.Zero - position;
+                    direction.Normalize();
+                    float velocitySpeed = rand.Next(625, 650);
+                    float accelSpeed = rand.Next(600, 650);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    -direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    //rand.Next(7000, 8000));
+                                    Math.Max(5000, (int)TwentySeconds.Subtract(AttractModeRunningTime.Subtract(AttractModeStartTime)).TotalMilliseconds) + rand.Next(0, 500));
+                }
+                return;
+            }
+            #endregion 6000 - 20000;
+
+            //Cross Hatch
+            #region 20000 - 35000;
+            TimeSpan ThirtyFiveSeconds = new TimeSpan(0, 0, 35);
+            if (AttractModeRunningTime < (AttractModeStartTime + ThirtyFiveSeconds))
+            {
+                int xUp = rand.Next(-800, 800);
+                for (int i = 0; i < 100; i++)
+                {
+                    Vector2 position = new Vector2(xUp, -600 - i);
+
+                    Vector2 direction = new Vector2(0, 1);
+                    float velocitySpeed = rand.Next(200, 250);
+                    float accelSpeed = rand.Next(200, 250);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(4000, 6000));
+                }
+
+                int xDown = rand.Next(-800, 800);
+                for (int i = 0; i < 100; i++)
+                {
+                    Vector2 position = new Vector2(xDown, 700 - i);
+
+                    Vector2 direction = new Vector2(0, -1);
+                    float velocitySpeed = rand.Next(200, 250);
+                    float accelSpeed = rand.Next(200, 250);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(4000, 6000));
+                }
+
+                int yRight = rand.Next(-600, 600);
+                for (int i = 0; i < 100; i++)
+                {
+                    Vector2 position = new Vector2(-800 - i, yRight);
+
+                    Vector2 direction = new Vector2(1, 0);
+                    float velocitySpeed = rand.Next(200, 250);
+                    float accelSpeed = rand.Next(200, 250);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(4000, 6000));
+                }
+
+                int yLeft = rand.Next(-600, 600);
+                for (int i = 0; i < 100; i++)
+                {
+                    Vector2 position = new Vector2(900 - i, yLeft);
+
+                    Vector2 direction = new Vector2(-1, 0);
+                    float velocitySpeed = rand.Next(200, 250);
+                    float accelSpeed = rand.Next(200, 250);
+                    emitter1.createParticles(direction * velocitySpeed,
+                                    direction * accelSpeed,
+                                    position,
+                                    rand.Next(15, 20),
+                                    rand.Next(4000, 6000));
+                }
+
+                return;
+            }
+            #endregion 20000 - 35000;
+
+            #region 35000 - 36000
+            if (AttractModeRunningTime < (AttractModeStartTime + new TimeSpan(0, 0, 36)))
+            {
+                return;
+            }
+            #endregion 35000 - 36000
+
+            #region 36000 - 39000
+            if (AttractModeRunningTime < (AttractModeStartTime + new TimeSpan(0, 0, 39)))
             {
                 video.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+                video.Stretch = Stretch.Fill;
                 video.Visibility = Visibility.Visible;
                 video.Volume = 1;
                 video.Play();
+                return;
             }
-            #endregion 6000 - 9000
 
+            video.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+            video.Visibility = Visibility.Hidden;
+            //video.Position = TimeSpan.Zero;
+            video.Stop();
+
+            #endregion 36000 - 39000
+
+            #region 39000 - 40000
+            if (AttractModeRunningTime < (AttractModeStartTime + new TimeSpan(0, 0, 40)))
+            {
+                return;
+            }
+            #endregion 39000 - 40000
+
+            GlobalVariables.lastTouchTime = GlobalVariables.TotalTime - new TimeSpan(0, 0, 1) - AttractModeStartTime;
         }
 
         private void video_MediaEnded(object sender, RoutedEventArgs e)
         {
+            video.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
             video.Visibility = Visibility.Hidden;
-            video.Position = TimeSpan.Zero;
+            //video.Position = TimeSpan.Zero;
+            video.Stop();
         }
     }
 }
