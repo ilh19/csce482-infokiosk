@@ -222,13 +222,6 @@
     <Resource Include="Images\closeIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\leftHandle.png" />
-    <Resource Include="Images\rightHandle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\resizeIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\transit.gif" />
     <Resource Include="Images\map.gif" />
     <Resource Include="Images\dining.gif" />
@@ -241,9 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\gray.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\topLabel.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Video\sample.MOV">

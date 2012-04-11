@@ -24,8 +24,6 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using System.Threading;
 
-
-
 namespace WpfApplication1
 {
     class Widget
@@ -42,6 +40,8 @@ namespace WpfApplication1
         protected bool finishedResizing;
         protected int imageHeight;
         UIElement last;
+
+        private int touchesOnTopPanel = 0;
 
         protected ScrollData sdata;
 
@@ -76,6 +76,7 @@ namespace WpfApplication1
             window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
             window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
             window.AddHandler(WrapPanel.TouchUpEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
+            window.AddHandler(WrapPanel.TouchLeaveEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
             window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
 
             canvas.Children.Add(window);
@@ -214,16 +215,13 @@ namespace WpfApplication1
 
         }
 
-        protected void topTab_TouchUp(object sender, TouchEventArgs e)
-        {
-
-        }
 
         protected void topTab_TouchDown(object sender, TouchEventArgs e)
         {
             UIElementCollection children = ((sender as DockPanel).Parent as Grid).Children;
             //Enable manipulation
             (((sender as DockPanel).Parent as Grid).Parent as WrapPanel).IsManipulationEnabled = true;
+            touchesOnTopPanel++;
 
             for (int i = 0; i < children.Count; i++)
             {
@@ -279,7 +277,7 @@ namespace WpfApplication1
                     {
                         DockPanel topTabPanel = gridChildren[i] as DockPanel;
                         HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
-                        if (result != null)
+                        if (result != null || (result == null && touchesOnTopPanel <= 1))
                         {
                             for (int j = 0; j < gridChildren.Count; j++)
                             {
@@ -287,6 +285,7 @@ namespace WpfApplication1
                                 {
                                     (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
                                     (element as WrapPanel).IsManipulationEnabled = false;
+                                    touchesOnTopPanel--;
                                     e.Handled = true;
                                     break;
                                 }
@@ -298,6 +297,11 @@ namespace WpfApplication1
             }
         }
 
+
+       /* protected void window_TouchLeave(object sender, System.Windows.Input.TouchEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+        }*/
         /**
          * This function manipulates the matrix transform of the widget. 
          * It performs scaling, rotation, and translation transformations. 
