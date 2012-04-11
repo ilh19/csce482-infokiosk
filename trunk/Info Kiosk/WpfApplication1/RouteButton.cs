@@ -40,6 +40,7 @@ namespace WpfApplication1
         {
             var uriSource = new Uri("pack://application:,,,/Images/" + imgName);
             img.Source = new BitmapImage(uriSource);
+            img.Width = 210;
 
             FontSize = 6;
             Content = buttonTitle;

@@ -240,6 +240,23 @@
   <ItemGroup>
     <Resource Include="Images\01.png" />
     <Resource Include="Images\test.png" />
+    <Resource Include="Images\03.png" />
+    <Resource Include="Images\04E.png" />
+    <Resource Include="Images\04W.png" />
+    <Resource Include="Images\05.png" />
+    <Resource Include="Images\06.png" />
+    <Resource Include="Images\07.png" />
+    <Resource Include="Images\08.png" />
+    <Resource Include="Images\12.png" />
+    <Resource Include="Images\15N.png" />
+    <Resource Include="Images\15S.png" />
+    <Resource Include="Images\22.png" />
+    <Resource Include="Images\26.png" />
+    <Resource Include="Images\27.png" />
+    <Resource Include="Images\31.png" />
+    <Resource Include="Images\33.png" />
+    <Resource Include="Images\34.png" />
+    <Resource Include="Images\36.png" />
     <Content Include="Video\sample.MOV">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
