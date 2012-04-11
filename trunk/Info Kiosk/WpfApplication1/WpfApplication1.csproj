@@ -55,6 +55,9 @@
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.Maps.MapControl.WPF">
+      <HintPath>references\Microsoft.Maps.MapControl.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.dll</HintPath>
@@ -154,6 +157,7 @@
     </Compile>
     <Compile Include="Class1.cs" />
     <Compile Include="ContentBuilder.cs" />
+    <Compile Include="DiningItem.cs" />
     <Compile Include="DiningWidget.cs" />
     <Compile Include="ErrorLogger.cs" />
     <Compile Include="MapWidget.cs" />
@@ -161,6 +165,7 @@
     <Compile Include="Page1.xaml.cs">
       <DependentUpon>Page1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RouteButton.cs" />
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="GraphicsDeviceService.cs" />
     <Compile Include="TransitWidget.cs" />
@@ -209,9 +214,6 @@
     <Resource Include="Images\earth.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\background.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Content\blue fire.png" />
     <Resource Include="Content\fire.png" />
     <Resource Include="Content\Particle.bmp" />
@@ -236,6 +238,8 @@
     <Resource Include="Images\gray.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\01.png" />
+    <Resource Include="Images\test.png" />
     <Content Include="Video\sample.MOV">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
