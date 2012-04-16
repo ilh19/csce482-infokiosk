@@ -136,12 +136,21 @@ namespace WpfApplication1
             instructions.Margin = new Thickness(0, 30, 0, 0);
             instructions.HorizontalAlignment = HorizontalAlignment.Stretch;
             instructions.VerticalAlignment = VerticalAlignment.Stretch;
-            TextBlock instructionsText = new TextBlock();
-            instructionsText.Text = "Instructions \n Resize \n Rotate \n Translate";
-            instructionsText.FontSize = 20;
+            System.Windows.Shapes.Rectangle gesturesRect = new System.Windows.Shapes.Rectangle();
+            gesturesRect.HorizontalAlignment = HorizontalAlignment.Center;
+            gesturesRect.VerticalAlignment = VerticalAlignment.Center;
+            gesturesRect.Width = 250;
+            gesturesRect.Height = 270;
+            gesturesRect.Name = "Gestures";
+            ImageBrush gestures = new ImageBrush();    // image background for close tab
+            gestures.ImageSource =
+                new BitmapImage(
+                    new Uri("pack://application:,,,/Images/handGestures.png")
+                );
+            gesturesRect.Fill = gestures;
             instructions.Visibility = Visibility.Collapsed;
             instructions.Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.5 };
-            instructions.Children.Add(instructionsText);
+            instructions.Children.Add(gesturesRect);
            
         }
 
