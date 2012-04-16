@@ -37,6 +37,7 @@ namespace WpfApplication1
             img = new Image();
             var uriSource = new Uri("pack://application:,,,/Images/" + str);
             img.Source = new BitmapImage(uriSource);
+            img.Width = 250;
             mapIt.Content = "MAP IT";
             //on clicking mapIt, open new window with map
             mapIt.VerticalAlignment = VerticalAlignment.Bottom;

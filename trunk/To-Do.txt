@@ -40,8 +40,8 @@ take glare off of gif images
 attract mode video
 transit - making buttons not say route, and having real time updates of timings
 making it so you can take off second finger during manipulation
-better gesture images
-changing touch particles
+DONE - better gesture images
+DONE - changing touch particles
 
 user study
 video

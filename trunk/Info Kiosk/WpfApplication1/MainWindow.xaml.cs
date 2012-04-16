@@ -76,7 +76,7 @@ namespace WpfApplication1
 
             emitter1 = new ParticleEmitter(300000, particleEffect, fire2);
             emitter1.effectTechnique = "FadeAtXPercent";
-            emitter1.fadeStartPercent = .1f;
+            emitter1.fadeStartPercent = 0.1f;
         }
 
         public GifImage DeepCopy(GifImage element)
@@ -344,58 +344,58 @@ namespace WpfApplication1
 
         private void rootImage_TouchMove(object sender, TouchEventArgs e)
         {
-            GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
+            //GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
 
-            if (emitter1 != null)
-            {
-                Vector2 currPosition = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
+            //if (emitter1 != null)
+            //{
+            //    Vector2 currPosition = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
                 
-                if (!lastPosition.ContainsKey(e.TouchDevice.Id))
-                    lastPosition.Add(e.TouchDevice.Id, currPosition);
+            //    if (!lastPosition.ContainsKey(e.TouchDevice.Id))
+            //        lastPosition.Add(e.TouchDevice.Id, currPosition);
 
-                Vector2 lastPos = lastPosition[e.TouchDevice.Id];
-                float distance = Vector2.Distance(lastPos, currPosition);
+            //    Vector2 lastPos = lastPosition[e.TouchDevice.Id];
+            //    float distance = Vector2.Distance(lastPos, currPosition);
 
-                //if (lastPositionArray.contains(currPosition))
-                //    return;
-                //else
-                //    lastPositionArray.add(currPosition);
+            //    //if (lastPositionArray.contains(currPosition))
+            //    //    return;
+            //    //else
+            //    //    lastPositionArray.add(currPosition);
 
-                for (float i = 0; i <= distance; i += 1f)
-                {
-                    float ratio;
-                    if (distance <= 0.001)
-                        ratio = 0;
-                    else
-                        ratio = i / distance;
+            //    for (float i = 0; i <= distance; i += 1f)
+            //    {
+            //        float ratio;
+            //        if (distance <= 0.001)
+            //            ratio = 0;
+            //        else
+            //            ratio = i / distance;
 
-                    double velocityAngle = rand.NextDouble() * Math.PI * 2;
-                    float velocitySpeed = rand.Next(5, 10);
-                    double accelAngle = rand.NextDouble() * Math.PI * 2;
-                    float accelSpeed = rand.Next(5, 10);
-                    emitter1.createParticles(new Vector2((float)Math.Cos(velocityAngle) * velocitySpeed, (float)Math.Sin(velocityAngle) * velocitySpeed),
-                                             new Vector2((float)Math.Cos(accelAngle) * accelSpeed, (float)Math.Sin(accelAngle) * accelSpeed),
-                                             new Vector2(lastPos.X * ratio + currPosition.X * (1 - ratio), lastPos.Y * ratio + currPosition.Y * (1 - ratio)),
-                                             45,
-                                             2000);
-                }
+            //        double velocityAngle = rand.NextDouble() * Math.PI * 2;
+            //        float velocitySpeed = rand.Next(5, 10);
+            //        double accelAngle = rand.NextDouble() * Math.PI * 2;
+            //        float accelSpeed = rand.Next(5, 10);
+            //        emitter1.createParticles(new Vector2((float)Math.Cos(velocityAngle) * velocitySpeed, (float)Math.Sin(velocityAngle) * velocitySpeed),
+            //                                 new Vector2((float)Math.Cos(accelAngle) * accelSpeed, (float)Math.Sin(accelAngle) * accelSpeed),
+            //                                 new Vector2(lastPos.X * ratio + currPosition.X * (1 - ratio), lastPos.Y * ratio + currPosition.Y * (1 - ratio)),
+            //                                 45,
+            //                                 rand.Next(500, 750));
+            //    }
 
-                lastPosition[e.TouchDevice.Id] = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
-            }
+            //    lastPosition[e.TouchDevice.Id] = new Vector2((float)(-e.GetTouchPoint(this).Position.X + ActualWidth / 2), (float)(-e.GetTouchPoint(this).Position.Y + ActualHeight / 2));
+            //}
         }
 
         private void rootImage_TouchUp(object sender, TouchEventArgs e)
         {
-            GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
+            //GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
 
-            if(lastPosition.ContainsKey(e.TouchDevice.Id))
-                lastPosition.Remove(e.TouchDevice.Id);
+            //if(lastPosition.ContainsKey(e.TouchDevice.Id))
+            //    lastPosition.Remove(e.TouchDevice.Id);
         }
 
         void AttractMode()
         {
             TimeSpan AttractModeRunningTime = GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime);
-            TimeSpan AttractModeStartTime = new TimeSpan(0,0,5);
+            TimeSpan AttractModeStartTime = new TimeSpan(0,0,90);
             #region Activate/Deactivate Attract Mode
             if (AttractModeRunningTime < AttractModeStartTime)
             {
