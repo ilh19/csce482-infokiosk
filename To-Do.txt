@@ -32,3 +32,22 @@ multiple users
 map app needs more routes
 
 
+
+add map image
+finish dining
+take weather picture every hour
+take glare off of gif images
+attract mode video
+transit - making buttons not say route, and having real time updates of timings
+making it so you can take off second finger during manipulation
+better gesture images
+changing touch particles
+
+user study
+video
+
+
+
+
+
+
