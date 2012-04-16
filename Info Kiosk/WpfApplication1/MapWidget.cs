@@ -37,6 +37,7 @@ namespace WpfApplication1
             map.VerticalAlignment = VerticalAlignment.Bottom;
             map.Margin = new Thickness(0, 30, 0, 0);
             map.Height = 500;
+            map.Width = 250;
             grid.Children.Add(map);
             grid.Children.Add(instructions);
         }

@@ -54,7 +54,7 @@ namespace WpfApplication1
             //}
 
             scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
             scroller.VerticalAlignment = VerticalAlignment.Bottom;
             scroller.Margin = new Thickness(0, 30, 0, 0);
             scroller.PanningMode = PanningMode.VerticalOnly;
@@ -64,14 +64,22 @@ namespace WpfApplication1
             StackPanel list = new StackPanel();
             //list.Height = 270;
 
-            DiningItem item1 = new DiningItem("test.png");
+            DiningItem item1 = new DiningItem("1 sidewalk.png");
             list.Children.Add(item1);
-            DiningItem item2 = new DiningItem("test.png");
+            DiningItem item2 = new DiningItem("2.png");
             list.Children.Add(item2);
-            DiningItem item3 = new DiningItem("test.png");
+            DiningItem item3 = new DiningItem("3.png");
             list.Children.Add(item3);
-            DiningItem item4 = new DiningItem("test.png");
+            DiningItem item4 = new DiningItem("4.png");
             list.Children.Add(item4);
+            DiningItem item5 = new DiningItem("5.png");
+            list.Children.Add(item5);
+            DiningItem item6 = new DiningItem("6.png");
+            list.Children.Add(item6);
+            DiningItem item7 = new DiningItem("7.png");
+            list.Children.Add(item7);
+            DiningItem item8 = new DiningItem("8.png");
+            list.Children.Add(item8);
 
             scroller.Content = list;
             grid.Children.Add(scroller);
