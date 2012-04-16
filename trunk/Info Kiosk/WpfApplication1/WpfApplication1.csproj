@@ -257,6 +257,7 @@
     <Resource Include="Images\33.png" />
     <Resource Include="Images\34.png" />
     <Resource Include="Images\36.png" />
+    <Resource Include="Images\handGestures.png" />
     <Content Include="Video\sample.MOV">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
