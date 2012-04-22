@@ -40,6 +40,7 @@ namespace WpfApplication1
         UIElement last;
 
         private int touchesOnTopPanel = 0;
+        private int touchesOnWindow = 0;
 
 
         public Widget(Canvas c, Grid g, System.Windows.Input.TouchEventArgs e)
@@ -234,6 +235,7 @@ namespace WpfApplication1
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
             //reset timer
             GlobalVariables.timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
+            touchesOnWindow++;
         }
 
         /*
@@ -258,7 +260,7 @@ namespace WpfApplication1
                     {
                         DockPanel topTabPanel = gridChildren[i] as DockPanel;
                         HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
-                        if (result != null || (result == null && touchesOnTopPanel <= 1))
+                        if (result != null && touchesOnTopPanel <= 1 && touchesOnWindow <= 1)
                         {
                             for (int j = 0; j < gridChildren.Count; j++)
                             {
@@ -276,6 +278,7 @@ namespace WpfApplication1
                     }
                 }
             }
+            touchesOnWindow--;
         }
 
 
