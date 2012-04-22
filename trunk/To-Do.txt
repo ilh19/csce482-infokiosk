@@ -33,10 +33,10 @@ map app needs more routes
 
 
 
-add map image
-finish dining
+DONE add map image
+DONE SORTA finish dining (need to work on zooming at center of touch)
 take weather picture every hour
-take glare off of gif images
+DONE - take glare off of gif images
 attract mode video
 transit - making buttons not say route, and having real time updates of timings
 making it so you can take off second finger during manipulation
