@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
+using Awesomium.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -24,6 +25,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using System.Threading;
 
 namespace WpfApplication1
 {
@@ -40,7 +42,8 @@ namespace WpfApplication1
 
         Dictionary<int, Vector2> lastPosition = new Dictionary<int, Vector2>();
         CircularArray<Vector2> lastPositionArray = new CircularArray<Vector2>(2000);
-
+        private bool finishedLoading;
+        private DispatcherTimer weatherTimer = new DispatcherTimer();
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -77,6 +80,22 @@ namespace WpfApplication1
             emitter1 = new ParticleEmitter(300000, particleEffect, fire2);
             emitter1.effectTechnique = "FadeAtXPercent";
             emitter1.fadeStartPercent = 0.1f;
+
+            WebView webView = WebCore.CreateWebView(300, 700);
+            webView.LoadURL("http://theshinyspoonpay.appspot.com");
+            webView.LoadCompleted += OnFinishLoading;
+
+            while (!finishedLoading)
+            {
+                Thread.Sleep(100);
+                WebCore.Update();
+            }
+            Uri uri = new Uri("pack://application:,,,/Images/weatherApp.png");
+            webView.Render().SaveToPNG("../../Images/weatherApp.png", true);
+
+            weatherTimer.Interval = TimeSpan.FromMilliseconds(30000);
+            weatherTimer.Tick += new EventHandler(getWeather);
+            weatherTimer.Start();
         }
 
         public GifImage DeepCopy(GifImage element)
@@ -150,7 +169,7 @@ namespace WpfApplication1
 
                 e.Handled = true;
 
-                System.Diagnostics.Debug.WriteLine("Matrix: " + matrix.ToString());
+                //System.Diagnostics.Debug.WriteLine("Matrix: " + matrix.ToString());
             }
         }
 
@@ -209,6 +228,7 @@ namespace WpfApplication1
 
             if (GlobalVariables.count <= Constants.maxWin)
             {
+                GlobalVariables.count++;
                 if ((sender as GifImage).Name == "map")
                 {
                     Widget wdgt = new MapWidget(canvas,LayoutRoot, e);
@@ -724,6 +744,28 @@ namespace WpfApplication1
             video.Visibility = Visibility.Hidden;
             //video.Position = TimeSpan.Zero;
             video.Stop();
+        }
+
+        private void getWeather(Object sender, EventArgs args)
+        {
+
+            WebView webView = WebCore.CreateWebView(300, 700);
+            webView.LoadURL("http://theshinyspoonpay.appspot.com");
+            webView.LoadCompleted += OnFinishLoading;
+
+            while (!finishedLoading)
+            {
+                Thread.Sleep(100);
+                WebCore.Update();
+            }
+            Uri uri = new Uri("pack://application:,,,/Images/weatherApp.png");
+            webView.Render().SaveToPNG("../../Images/weatherApp.png", true);
+            finishedLoading = false;
+        }
+
+        protected void OnFinishLoading(object sender, EventArgs e)
+        {
+            finishedLoading = true;
         }
     }
 }

@@ -7,10 +7,11 @@
 	x:Class="WpfApplication1.MainWindow"
 	x:Name="Window"
 	Title="MainWindow"
-	Width="1600" Height="1200" Loaded="Window_Loaded"
-    WindowStyle="None" Topmost="True" Cursor="None" WindowState="Maximized">
+	Width="1600" Height="1200" Loaded="Window_Loaded">
+    <!-- WindowStyle="None" Topmost="True" Cursor="None" WindowState="Maximized"> -->
 
-    <Grid x:Name="LayoutRoot" Margin="0">
+    <Grid x:Name="LayoutRoot" Margin="0" Stylus.IsPressAndHoldEnabled="False" >
+        
         <Grid.Background>
             <ImageBrush ImageSource="Images/background.png"/>
         </Grid.Background>

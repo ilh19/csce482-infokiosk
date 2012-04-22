@@ -160,6 +160,7 @@
     <Compile Include="DiningItem.cs" />
     <Compile Include="DiningWidget.cs" />
     <Compile Include="ErrorLogger.cs" />
+    <Compile Include="MapItButton.cs" />
     <Compile Include="MapWidget.cs" />
     <Compile Include="ParticleEmitter.cs" />
     <Compile Include="Page1.xaml.cs">
@@ -257,19 +258,44 @@
     <Resource Include="Images\33.png" />
     <Resource Include="Images\34.png" />
     <Resource Include="Images\36.png" />
-    <Resource Include="Images\1 sidewalk.png" />
-    <Resource Include="Images\2.png" />
-    <Resource Include="Images\3.png" />
-    <Resource Include="Images\4.png" />
-    <Resource Include="Images\5.png" />
-    <Resource Include="Images\6.png" />
-    <Resource Include="Images\7.png" />
-    <Resource Include="Images\8.png" />
     <Resource Include="Images\currentMap2.png" />
     <Resource Include="Images\handGestures.png" />
+    <Resource Include="Images\dining\central\c01.png" />
+    <Resource Include="Images\dining\central\c02.png" />
+    <Resource Include="Images\dining\north\map\n02m.png" />
+    <Resource Include="Images\dining\north\n1.png" />
+    <Resource Include="Images\dining\north\n2.png" />
+    <Resource Include="Images\dining\north\n3.png" />
+    <Resource Include="Images\dining\north\n4.png" />
+    <Resource Include="Images\dining\north\n5.png" />
+    <Resource Include="Images\dining\north\n6.png" />
+    <Resource Include="Images\dining\north\n7.png" />
+    <Resource Include="Images\dining\north\n8.png" />
+    <Resource Include="Images\dining\south\s01.png" />
+    <Resource Include="Images\dining\south\s02.png" />
+    <Resource Include="Images\dining\south\s03.png" />
+    <Resource Include="Images\dining\south\s04.png" />
+    <Resource Include="Images\dining\south\s05.png" />
+    <Resource Include="Images\dining\south\s06.png" />
+    <Resource Include="Images\dining\south\s07.png" />
+    <Resource Include="Images\dining\south\s08.png" />
+    <Resource Include="Images\dining\west\w01.png" />
+    <Resource Include="Images\dining\west\w02.png" />
+    <Resource Include="Images\dining\west\w03.png" />
+    <Resource Include="Images\dining\west\w04.png" />
+    <Resource Include="Images\dining\west\w05.png" />
+    <Resource Include="Images\dining\west\w06.png" />
+    <Resource Include="Images\dining\central.png" />
+    <Resource Include="Images\dining\north.png" />
+    <Resource Include="Images\dining\south.png" />
+    <Resource Include="Images\dining\west.png" />
+    <Resource Include="Images\currentMapDining.png" />
     <Content Include="Video\sample.MOV">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images\dining\south\map\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

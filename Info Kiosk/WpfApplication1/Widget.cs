@@ -24,20 +24,23 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using System.Threading;
 
+
 namespace WpfApplication1
 {
     class Widget
     {
         protected Grid LayoutRoot;
         protected WrapPanel window = new WrapPanel();
+        //protected SurfaceScrollViewer scroller = new SurfaceScrollViewer();
         protected ScrollViewer scroller = new ScrollViewer();
         protected Grid contentGrid;
         protected StackPanel instructions = new StackPanel();
         protected DispatcherTimer newTimer = new DispatcherTimer();
         protected Canvas canvas;
-        protected bool finishedLoading;
+       
         protected Grid grid = new Grid();
         UIElement last;
+        protected System.Windows.Shapes.Rectangle appTab =new System.Windows.Shapes.Rectangle();
 
         private int touchesOnTopPanel = 0;
         private int touchesOnWindow = 0;
@@ -48,7 +51,6 @@ namespace WpfApplication1
             LayoutRoot = g;
             canvas = c;
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
-
             window.Height = 300;
             window.Width = 250;
 
@@ -86,11 +88,24 @@ namespace WpfApplication1
             topTab.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             topTab.VerticalAlignment = VerticalAlignment.Top;
             topTab.Margin = new Thickness(0);
+            topTab.Background = new SolidColorBrush(maroon);
+
+            //app icon
+            //System.Windows.Shapes.Rectangle appTab = new System.Windows.Shapes.Rectangle();
+            appTab.Name = "AppTab";
+            //ImageBrush appIcon = new ImageBrush();    
+            appTab.IsManipulationEnabled = false;
+            appTab.Height = 30;
+            appTab.Width = 30;
+            //appTab.Fill = appIcon;
+            appTab.HorizontalAlignment = HorizontalAlignment.Left;
+            appTab.VerticalAlignment = VerticalAlignment.Center;
+            topTab.Children.Add(appTab);
 
             // Spacer
             System.Windows.Shapes.Rectangle spacer = new System.Windows.Shapes.Rectangle();
             spacer.Height = 30;
-            spacer.Width = 30;
+            spacer.Width = 10;
             spacer.HorizontalAlignment = HorizontalAlignment.Left;
             spacer.VerticalAlignment = VerticalAlignment.Center;
             topTab.Children.Add(spacer);
@@ -121,6 +136,7 @@ namespace WpfApplication1
             closeTab.HorizontalAlignment = HorizontalAlignment.Right;
             closeTab.VerticalAlignment = VerticalAlignment.Center;
             topTab.Children.Add(closeTab);
+
             grid.Children.Add(topTab);
 
             //Timer
@@ -186,17 +202,6 @@ namespace WpfApplication1
             }
             return angle * 180 / Math.PI;
         }
-
-        protected void OnFinishLoading(object sender, EventArgs e)
-        {
-            finishedLoading = true;
-        }
-
-        protected void Initialize()
-        {
-
-        }
-
 
         protected void topTab_TouchDown(object sender, TouchEventArgs e)
         {
@@ -425,13 +430,8 @@ namespace WpfApplication1
                 Canvas.SetZIndex(uie, 2);
                 last = uie;
             }
-
-            //canvas is the parent of the image starting the manipulation;
-            //Container does not have to be parent, but that is the most common scenario
             e.ManipulationContainer = canvas;
             e.Handled = true;
-            // you could set the mode here too 
-            // e.Mode = ManipulationModes.All;        
         }
 
         protected void onElapsedTimer(Object sender, EventArgs args)

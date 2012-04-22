@@ -54,6 +54,12 @@ namespace WpfApplication1
            // image.IsManipulationEnabled = false;
            // scroller.Content = image;
 
+            ImageBrush appIcon = new ImageBrush();
+            appIcon.ImageSource = new BitmapImage(
+            new Uri("pack://application:,,,/Images/transit.gif")
+            );
+            appTab.Fill = appIcon;
+
             Image image = new Image();
             var uriSource = new Uri("pack://application:,,,/Images/" + "01.png");
             image.Source = new BitmapImage(uriSource);
