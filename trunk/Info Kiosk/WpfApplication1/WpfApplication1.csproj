@@ -290,6 +290,7 @@
     <Resource Include="Images\dining\south.png" />
     <Resource Include="Images\dining\west.png" />
     <Resource Include="Images\currentMapDining.png" />
+    <Resource Include="Images\arrow.png" />
     <Content Include="Video\sample.MOV">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.Windows.Controls;
 
 namespace WpfApplication1
 {
@@ -16,7 +17,7 @@ namespace WpfApplication1
 
     public static class GlobalVariables
     {
-        public static GifImage gifCopy;
+        public static DockPanel gifCopy;
         public static System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
         public static TimeSpan TotalTime;
         public static TimeSpan PrevTime;
@@ -32,7 +33,7 @@ namespace WpfApplication1
     static class Constants
     {
         public const int closeInterval = 90000; //in milliseconds
-        public const int maxWin = 5;
+        public const int maxWin = 7;
     }
 
     public partial class App : Application
