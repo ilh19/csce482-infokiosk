@@ -96,5 +96,7 @@ namespace WpfApplication1
         {
             BeginAnimation(FrameIndexProperty, null);
         }
+        
+        public double angleRotation { get; set; }
     }
 }

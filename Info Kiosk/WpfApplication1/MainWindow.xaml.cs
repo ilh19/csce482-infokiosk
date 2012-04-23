@@ -98,12 +98,12 @@ namespace WpfApplication1
             weatherTimer.Start();
         }
 
-        public GifImage DeepCopy(GifImage element)
+        public DockPanel DeepCopy(DockPanel element)
         {
             string shapestring = XamlWriter.Save(element);
             StringReader stringReader = new StringReader(shapestring);
             XmlTextReader xmlTextReader = new XmlTextReader(stringReader);
-            GifImage DeepCopyobject = (GifImage)XamlReader.Load(xmlTextReader);
+            DockPanel DeepCopyobject = (DockPanel)XamlReader.Load(xmlTextReader);
             return DeepCopyobject;
         }
 
@@ -114,6 +114,39 @@ namespace WpfApplication1
             map.GifSource = "/Images/map.gif";
             transit.GifSource = "/Images/transit.gif";
             dining.GifSource = "/Images/dining.gif";
+
+            //Rotation of Menu Panel controls
+            //Weather
+            System.Windows.Point relativePoint = weatherPanel.TransformToAncestor(LayoutRoot).Transform(new System.Windows.Point(0, 0));
+            MatrixTransform weatherTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+            weatherPanel.RenderTransform = weatherTransform;
+            System.Windows.Media.Matrix weatherMatrix = new System.Windows.Media.Matrix(1, 0, 0, 1, 0, 0);
+            weatherMatrix.RotateAt(180, relativePoint.X + weatherPanel.Width / 2, relativePoint.Y + weatherPanel.Height / 2);
+            weather.angleRotation = 180;
+            ((MatrixTransform)weatherPanel.RenderTransform).Matrix = weatherMatrix;
+
+            //Transit
+            MatrixTransform transitTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+            transitPanel.RenderTransform = transitTransform;
+            transit.angleRotation = 0;
+
+            //Map
+            relativePoint = mapPanel.TransformToAncestor(LayoutRoot).Transform(new System.Windows.Point(0, 0));
+            MatrixTransform mapTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+            mapPanel.RenderTransform = mapTransform;
+            System.Windows.Media.Matrix mapMatrix = new System.Windows.Media.Matrix(1, 0, 0, 1, 0, 0);
+            mapMatrix.RotateAt(270, relativePoint.X + mapPanel.Width / 2, relativePoint.Y + mapPanel.Height / 2);
+            ((MatrixTransform)mapPanel.RenderTransform).Matrix = mapMatrix;
+            map.angleRotation = 270;
+
+            //Dining
+            relativePoint = diningPanel.TransformToAncestor(LayoutRoot).Transform(new System.Windows.Point(0, 0));
+            MatrixTransform diningTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
+            diningPanel.RenderTransform = diningTransform;
+            System.Windows.Media.Matrix diningMatrix = new System.Windows.Media.Matrix(1, 0, 0, 1, 0, 0);
+            diningMatrix.RotateAt(90, relativePoint.X + diningPanel.Width / 2, relativePoint.Y + diningPanel.Height / 2);
+            ((MatrixTransform)diningPanel.RenderTransform).Matrix = diningMatrix;
+            dining.angleRotation = 90;
 
             // Insert code required on object creation below this point.
             //InitializeComponent();
@@ -160,7 +193,30 @@ namespace WpfApplication1
                 //this will be a Zoom. 
                 //matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y); 
                 // Rotation 
-                matrix.RotateAt(e.DeltaManipulation.Rotation, center.X, center.Y);
+                IEnumerable<IManipulator> touches = e.Manipulators;
+                IManipulator maniObject = touches.First();
+                System.Windows.Point touchPoint = maniObject.GetPosition(LayoutRoot);
+                double yCoordinate = LayoutRoot.ActualHeight / 2 - touchPoint.Y;
+                double xCoordinate = touchPoint.X - LayoutRoot.ActualWidth / 2;
+                double rotationAngle = Widget.CalculateRotationAngle(xCoordinate, yCoordinate);
+                //System.Diagnostics.Debug.WriteLine("Rotation Angle before adjustments: " + rotationAngle.ToString() + "X: " + center.X + "y: " + center.Y);
+
+                // adjust rotation angle with the previous angle (which started from the origin)
+                UIElementCollection children = (element as DockPanel).Children;
+                double adjustedAngle = 0;
+                for (int i = 0; i < children.Count; i++)
+                {
+                    if (children[i] is GifImage)
+                    {
+                        adjustedAngle = (children[i] as GifImage).angleRotation;
+                        (children[i] as GifImage).angleRotation = rotationAngle;
+                        rotationAngle = rotationAngle - adjustedAngle;
+                        break;
+                    }
+                }
+
+                matrix.RotateAt(rotationAngle, center.X, center.Y);            
+                
                 //Translation (pan) 
                 matrix.Translate(e.DeltaManipulation.Translation.X, e.DeltaManipulation.Translation.Y);
 
@@ -197,21 +253,61 @@ namespace WpfApplication1
         private void gifImage_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
+            GifImage gif = sender as GifImage;
+            DockPanel panel = gif.Parent as DockPanel;
+            UIElementCollection children = panel.Children;
 
             if (movingGifImage.ContainsKey((GifImage)sender) == false)
             {
-                GlobalVariables.gifCopy = new GifImage();
-                GlobalVariables.gifCopy = DeepCopy((GifImage)sender);
+                GlobalVariables.gifCopy = new DockPanel();
+                GlobalVariables.gifCopy = DeepCopy(panel);
 
                 GlobalVariables.gifCopy.ManipulationDelta += circle_ManipulationDelta;
                 GlobalVariables.gifCopy.ManipulationStarting += circle_ManipulationStarting;
-                GlobalVariables.gifCopy.TouchDown += gifImage_TouchDown;
-                GlobalVariables.gifCopy.TouchUp += gifImage_TouchUp;
+                GlobalVariables.gifCopy.TouchUp += gifPanel_TouchUp;
                 GlobalVariables.gifCopy.Loaded += Window_Loaded;
+
+                UIElementCollection copyChildren = GlobalVariables.gifCopy.Children;
+                for (int i = 0; i < copyChildren.Count; i++)
+                {
+                    if (copyChildren[i] is GifImage)
+                    {
+                        (copyChildren[i] as GifImage).TouchDown += gifImage_TouchDown;
+                        (copyChildren[i] as GifImage).TouchUp += gifImage_TouchUp;
+                        break;
+                    }
+                }
 
                 movingGifImage[(GifImage)sender] = e.TouchDevice.Id;
                 canvas.Children.Add(GlobalVariables.gifCopy);
             }
+            //visibility of arrow is enabled
+            for (int i = 0; i < children.Count; i++)
+            {
+                if (!(children[i] is GifImage) && children[i] is Image)
+                {
+                    (children[i] as Image).Visibility = Visibility.Visible;
+                    break;
+                }
+            }
+        }
+
+        private void gifPanel_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
+        {
+            FrameworkElement element = sender as FrameworkElement;
+            if (element is DockPanel)
+            {
+                UIElementCollection children = (element as DockPanel).Children;
+                for (int i = 0; i < children.Count; i++)
+                {
+                    if (children[i] is GifImage)
+                    {
+                        element = children[i] as GifImage;
+                        break;
+                    }
+                }
+            }
+            gifImage_TouchUp(element, e);
         }
 
         private void gifImage_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
@@ -219,19 +315,21 @@ namespace WpfApplication1
             //lastTouchTime = GlobalVariables.TotalTime;
 
             // TODO: Add event handler implementation here.
+            GifImage gif = sender as GifImage;
+            DockPanel panel = gif.Parent as DockPanel;
+            UIElementCollection children = panel.Children;
 
             if (movingGifImage.ContainsKey((GifImage)sender))
             {
-                canvas.Children.Remove((GifImage)sender);
+                canvas.Children.Remove(panel);
                 movingGifImage.Remove((GifImage)sender);
             }
 
             if (GlobalVariables.count <= Constants.maxWin)
             {
-                GlobalVariables.count++;
                 if ((sender as GifImage).Name == "map")
                 {
-                    Widget wdgt = new MapWidget(canvas,LayoutRoot, e);
+                    Widget wdgt = new MapWidget(canvas, LayoutRoot, e);
                 }
                 else if ((sender as GifImage).Name == "transit")
                 {
@@ -243,7 +341,7 @@ namespace WpfApplication1
                 }
                 else if ((sender as GifImage).Name == "dining")
                 {
-                    Widget wdgt = new DiningWidget(canvas,LayoutRoot, e);
+                    Widget wdgt = new DiningWidget(canvas, LayoutRoot, e);
                 }
                 else
                 {

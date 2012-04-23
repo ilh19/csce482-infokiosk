@@ -75,7 +75,7 @@ namespace WpfApplication1
             window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
             window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
             window.AddHandler(WrapPanel.TouchUpEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
-            window.AddHandler(WrapPanel.TouchLeaveEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
+            //window.AddHandler(WrapPanel.TouchLeaveEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
             window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
 
             canvas.Children.Add(window);
@@ -175,9 +175,9 @@ namespace WpfApplication1
          * Determines the angle of rotation for the window when a menu item is dragged and dropped to 
          * a specific location in the screen. 
          * 
-         * Returns angle in radians
+         * Returns angle in degrees
          */
-        private double CalculateRotationAngle(double xCoordinate, double yCoordinate)
+        public static double CalculateRotationAngle(double xCoordinate, double yCoordinate)
         {
             double angle = 0;
             if (xCoordinate > 0 && yCoordinate >= 0) // 1st quadrant
@@ -265,7 +265,7 @@ namespace WpfApplication1
                     {
                         DockPanel topTabPanel = gridChildren[i] as DockPanel;
                         HitTestResult result = VisualTreeHelper.HitTest(topTabPanel, touchedPoint.Position);
-                        if (result != null && touchesOnTopPanel <= 1 && touchesOnWindow <= 1)
+                        if ((result != null && touchesOnTopPanel <= 1) || touchesOnWindow <= 1)
                         {
                             for (int j = 0; j < gridChildren.Count; j++)
                             {
@@ -273,17 +273,19 @@ namespace WpfApplication1
                                 {
                                     (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
                                     (element as WrapPanel).IsManipulationEnabled = false;
-                                    touchesOnTopPanel--;
+                                    touchesOnTopPanel = 0;
+                                    touchesOnWindow = 0;
                                     e.Handled = true;
                                     break;
                                 }
                             }
                         }
+                        if (result != null && touchesOnTopPanel > 1) touchesOnTopPanel--;
                         break;
                     }
                 }
             }
-            touchesOnWindow--;
+            if (touchesOnWindow > 1) touchesOnWindow--;
         }
 
 

@@ -10,19 +10,104 @@
 	Width="1600" Height="1200" Loaded="Window_Loaded">
     <!-- WindowStyle="None" Topmost="True" Cursor="None" WindowState="Maximized"> -->
 
-    <Grid x:Name="LayoutRoot" Margin="0" Stylus.IsPressAndHoldEnabled="False" >
-        
+    <Grid x:Name="LayoutRoot" Margin="0">
         <Grid.Background>
             <ImageBrush ImageSource="Images/background.png"/>
         </Grid.Background>
         <Canvas x:Name="canvas" Margin="0">
-            <Image x:Name="rootImage" Width="1600" Height="1200" TouchMove="rootImage_TouchMove" TouchUp="rootImage_TouchUp"/>
-            <local:GifImage x:Name="weather"  HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="472" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
-            <local:GifImage x:Name="transit"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="755" Canvas.Top="578" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
-            <local:GifImage x:Name="map"  HorizontalAlignment="Left" Height="70"  VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="808" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
-            <local:GifImage x:Name="dining" HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="70" ManipulationStarting="circle_ManipulationStarting" TouchDown="gifImage_TouchDown" ManipulationDelta="circle_ManipulationDelta" Canvas.Left="702" Canvas.Top="525" IsManipulationEnabled="True"  TouchUp="gifImage_TouchUp"/>
-            <Image x:Name="grayImage" Source="Images/gray.png" Opacity="0"  Visibility="Hidden"/>
-            <MediaElement x:Name="video" Volume="0" Visibility="Hidden" Source="Video/sample.mov"  Width="1600" Height="1200" HorizontalAlignment="Center" VerticalAlignment="Top" MediaEnded="video_MediaEnded" />
+            <Image x:Name="rootImage" Width="1600" Height="1200" TouchMove="rootImage_TouchMove" TouchUp="rootImage_TouchUp" Canvas.Left="0" Canvas.Top="6" />
+            <DockPanel Name="weatherPanel"
+                       Canvas.Left="755" Canvas.Top="428"
+                       Width="70"
+                       Height="120"
+                       ManipulationStarting="circle_ManipulationStarting"
+                       ManipulationDelta="circle_ManipulationDelta" 
+                       TouchUp="gifPanel_TouchUp"
+                       IsManipulationEnabled="True">
+                <local:GifImage x:Name="weather" 
+                                Width="70" Height="70"
+                                DockPanel.Dock="Top" 
+                                TouchUp="gifImage_TouchUp" 
+                                TouchDown="gifImage_TouchDown" />
+                <Image Name="weatherArrow"
+                       Source="pack://application:,,,/Images/arrow.png" 
+                       Visibility="Hidden"
+                       Width="40" Height="50" />
+
+            </DockPanel>
+            <DockPanel VerticalAlignment="Bottom" 
+                       Name="transitPanel"
+                       HorizontalAlignment="Left"  
+                       Canvas.Left="755" Canvas.Top="578" 
+                       Width="70"
+                       Height="120"
+                       ManipulationStarting="circle_ManipulationStarting"
+                       ManipulationDelta="circle_ManipulationDelta" 
+                       TouchUp="gifPanel_TouchUp"
+                       IsManipulationEnabled="True">
+                <local:GifImage x:Name="transit" 
+                                Width="70" Height="70"
+                                DockPanel.Dock="Top" 
+                                TouchDown="gifImage_TouchDown" 
+                                TouchUp="gifImage_TouchUp"/>
+                <Image Name="transitArrow" 
+                       Source="pack://application:,,,/Images/arrow.png" 
+                       Visibility="Hidden"
+                       Width="40" Height="50"/>
+            </DockPanel>
+            <DockPanel VerticalAlignment="Bottom"
+                       Name="mapPanel"
+                       HorizontalAlignment="Left" 
+                       Canvas.Left="842" Canvas.Top="504"                        
+                       ManipulationStarting="circle_ManipulationStarting"
+                       ManipulationDelta="circle_ManipulationDelta" 
+                       TouchUp="gifPanel_TouchUp"
+                       Width="70"
+                       Height="120"
+                       IsManipulationEnabled="True">
+                <local:GifImage x:Name="map"
+                                Width="70" Height="70" 
+                                DockPanel.Dock="Top" 
+                                TouchDown="gifImage_TouchDown"                                
+                                TouchUp="gifImage_TouchUp"/>
+                <Image Name="mapArrow" 
+                       DockPanel.Dock="Right" 
+                       Source="pack://application:,,,/Images/arrow.png"   
+                       Visibility="Hidden"
+                       Width="40" Height="50"/>
+            </DockPanel>
+            <DockPanel VerticalAlignment="Bottom" 
+                       HorizontalAlignment="Left" 
+                       Name="diningPanel"
+                       Canvas.Left="666" Canvas.Top="505"
+                       Width="70"
+                       Height="120"
+                       ManipulationStarting="circle_ManipulationStarting"
+                       ManipulationDelta="circle_ManipulationDelta" 
+                       TouchUp="gifPanel_TouchUp" 
+                       IsManipulationEnabled="True">
+                <local:GifImage x:Name="dining"
+                                Width="70" Height="70"
+                                DockPanel.Dock="Top" 
+                                TouchDown="gifImage_TouchDown"
+                                TouchUp="gifImage_TouchUp"/>
+                <Image Name="diningArrow"
+                       Source="pack://application:,,,/Images/arrow.png"  
+                       Visibility="Hidden"
+                       Width="40" Height="50"/>
+            </DockPanel>
+            <Image x:Name="grayImage" 
+                   Source="Images/gray.png" 
+                   Opacity="0"  
+                   Visibility="Hidden"/>
+            <MediaElement x:Name="video"
+                          Volume="0" 
+                          Visibility="Hidden" 
+                          Source="Video/sample.mov"  
+                          Width="1600" Height="1200" 
+                          HorizontalAlignment="Center" 
+                          VerticalAlignment="Top"
+                          MediaEnded="video_MediaEnded" />
 
         </Canvas>
     </Grid>
