@@ -76,7 +76,7 @@ namespace WpfApplication1
             window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
             window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
             window.AddHandler(WrapPanel.TouchUpEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
-            //window.AddHandler(WrapPanel.TouchLeaveEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
+            window.AddHandler(WrapPanel.TouchLeaveEvent, new EventHandler<TouchEventArgs>(window_TouchLeave), true);
             window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
 
             canvas.Children.Add(window);
@@ -252,6 +252,7 @@ namespace WpfApplication1
          */
         protected void window_TouchUp(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("TouchUpEnter: touchesOnTopPanel: " + touchesOnTopPanel + " touchesOnWindow: " + touchesOnWindow);
             FrameworkElement element = e.Source as FrameworkElement;
             if (element is WrapPanel)
             {
@@ -287,13 +288,51 @@ namespace WpfApplication1
                 }
             }
             if (touchesOnWindow > 1) touchesOnWindow--;
+            System.Diagnostics.Debug.WriteLine("TouchUpLeave: touchesOnTopPanel: " + touchesOnTopPanel + " touchesOnWindow: " + touchesOnWindow);
         }
 
 
-       /* protected void window_TouchLeave(object sender, System.Windows.Input.TouchEventArgs e)
+        protected void window_TouchLeave(object sender, System.Windows.Input.TouchEventArgs e)
         {
-            FrameworkElement element = sender as FrameworkElement;
-        }*/
+            System.Diagnostics.Debug.WriteLine("TouchLeaveEnter: touchesOnTopPanel: " + touchesOnTopPanel + " touchesOnWindow: " + touchesOnWindow);
+            
+            FrameworkElement element = e.Source as FrameworkElement;
+            if (element is WrapPanel)
+            {
+                WrapPanel panel = element as WrapPanel;
+                UIElementCollection windowChildren = panel.Children;
+                UIElementCollection gridChildren = (windowChildren[0] as Grid).Children;
+                TouchPoint touchedPoint = e.GetTouchPoint(panel);
+                HitTestResult result = VisualTreeHelper.HitTest(panel, touchedPoint.Position);
+
+                if (result == null && touchesOnWindow <= 1)
+                {
+                    for (int i = 0; i < gridChildren.Count; i++)
+                    {
+                        if (gridChildren[i] is DockPanel && (gridChildren[i] as DockPanel).Name == "TopTab")
+                        {
+                            for (int j = 0; j < gridChildren.Count; j++)
+                            {
+                                if (gridChildren[j] is StackPanel && (gridChildren[j] as StackPanel).Name == "InstructionsPanel")
+                                {
+                                    (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
+                                    (element as WrapPanel).IsManipulationEnabled = false;
+                                    touchesOnTopPanel = 0;
+                                    touchesOnWindow = 0;
+                                    e.Handled = true;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    if (touchesOnWindow > 1) touchesOnWindow--;
+                }
+                
+            }     
+            System.Diagnostics.Debug.WriteLine("TouchLeaveExit: touchesOnTopPanel: " + touchesOnTopPanel + " touchesOnWindow: " + touchesOnWindow);           
+        }
+
         /**
          * This function manipulates the matrix transform of the widget. 
          * It performs scaling, rotation, and translation transformations. 
@@ -336,25 +375,10 @@ namespace WpfApplication1
                 double maxHeight = element.ActualHeight + 250;
                 double minHeight = element.ActualHeight - 50;
 
-                // maximum and minimum height and width
+                // maximum and minimum height and width. Only scale if it's within these values
                 if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight)
                 {
                     matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
-
-                    /*  if (element is WrapPanel)
-                      {
-                          UIElementCollection windowChildren = (element as WrapPanel).Children;
-                          UIElementCollection children = (windowChildren[0] as Grid).Children;  //get the grid
-                          for (int i = 0; i < children.Count; i++)
-                          {
-                              if (children[i] is StackPanel && (children[i] as StackPanel).Name == "TopTab")
-                              {
-                                  var instructionsMatrix = ((MatrixTransform)(children[i] as StackPanel).RenderTransform).Matrix;
-                                  instructionsMatrix.Scale(1, 1 / deltaManipulation.Scale.Y);
-                                  ((MatrixTransform)(children[i] as StackPanel).RenderTransform).Matrix = instructionsMatrix;
-                              }
-                          }
-                      }*/
                 }
 
                 // Rotation 
