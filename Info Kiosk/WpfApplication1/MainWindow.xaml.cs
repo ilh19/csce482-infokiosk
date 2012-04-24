@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
-using Awesomium.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,7 +24,6 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using System.Threading;
 
 namespace WpfApplication1
 {
@@ -42,8 +40,7 @@ namespace WpfApplication1
 
         Dictionary<int, Vector2> lastPosition = new Dictionary<int, Vector2>();
         CircularArray<Vector2> lastPositionArray = new CircularArray<Vector2>(2000);
-        private bool finishedLoading;
-        private DispatcherTimer weatherTimer = new DispatcherTimer();
+
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -80,22 +77,6 @@ namespace WpfApplication1
             emitter1 = new ParticleEmitter(300000, particleEffect, fire2);
             emitter1.effectTechnique = "FadeAtXPercent";
             emitter1.fadeStartPercent = 0.1f;
-
-            WebView webView = WebCore.CreateWebView(300, 700);
-            webView.LoadURL("http://theshinyspoonpay.appspot.com");
-            webView.LoadCompleted += OnFinishLoading;
-
-            while (!finishedLoading)
-            {
-                Thread.Sleep(100);
-                WebCore.Update();
-            }
-            Uri uri = new Uri("pack://application:,,,/Images/weatherApp.png");
-            webView.Render().SaveToPNG("../../Images/weatherApp.png", true);
-
-            weatherTimer.Interval = TimeSpan.FromMilliseconds(30000);
-            weatherTimer.Tick += new EventHandler(getWeather);
-            weatherTimer.Start();
         }
 
         public DockPanel DeepCopy(DockPanel element)
@@ -115,8 +96,8 @@ namespace WpfApplication1
             transit.GifSource = "/Images/transit.gif";
             dining.GifSource = "/Images/dining.gif";
 
-            //Rotation of Menu Panel controls
-            //Weather
+            //Rotation of Menu Panel
+              //Weather
             System.Windows.Point relativePoint = weatherPanel.TransformToAncestor(LayoutRoot).Transform(new System.Windows.Point(0, 0));
             MatrixTransform weatherTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             weatherPanel.RenderTransform = weatherTransform;
@@ -125,12 +106,12 @@ namespace WpfApplication1
             weather.angleRotation = 180;
             ((MatrixTransform)weatherPanel.RenderTransform).Matrix = weatherMatrix;
 
-            //Transit
+              //Transit
             MatrixTransform transitTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             transitPanel.RenderTransform = transitTransform;
             transit.angleRotation = 0;
 
-            //Map
+              //Map
             relativePoint = mapPanel.TransformToAncestor(LayoutRoot).Transform(new System.Windows.Point(0, 0));
             MatrixTransform mapTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             mapPanel.RenderTransform = mapTransform;
@@ -139,7 +120,7 @@ namespace WpfApplication1
             ((MatrixTransform)mapPanel.RenderTransform).Matrix = mapMatrix;
             map.angleRotation = 270;
 
-            //Dining
+              //Dining
             relativePoint = diningPanel.TransformToAncestor(LayoutRoot).Transform(new System.Windows.Point(0, 0));
             MatrixTransform diningTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             diningPanel.RenderTransform = diningTransform;
@@ -200,7 +181,7 @@ namespace WpfApplication1
                 double xCoordinate = touchPoint.X - LayoutRoot.ActualWidth / 2;
                 double rotationAngle = Widget.CalculateRotationAngle(xCoordinate, yCoordinate);
                 //System.Diagnostics.Debug.WriteLine("Rotation Angle before adjustments: " + rotationAngle.ToString() + "X: " + center.X + "y: " + center.Y);
-
+                
                 // adjust rotation angle with the previous angle (which started from the origin)
                 UIElementCollection children = (element as DockPanel).Children;
                 double adjustedAngle = 0;
@@ -215,8 +196,8 @@ namespace WpfApplication1
                     }
                 }
 
-                matrix.RotateAt(rotationAngle, center.X, center.Y);            
-                
+                matrix.RotateAt(rotationAngle, center.X, center.Y);
+                //matrix.RotateAt(e.DeltaManipulation.Rotation, center.X, center.Y);
                 //Translation (pan) 
                 matrix.Translate(e.DeltaManipulation.Translation.X, e.DeltaManipulation.Translation.Y);
 
@@ -225,7 +206,8 @@ namespace WpfApplication1
 
                 e.Handled = true;
 
-                //System.Diagnostics.Debug.WriteLine("Matrix: " + matrix.ToString());
+               // System.Diagnostics.Debug.WriteLine("Rotation Angle: " + rotationAngle.ToString() + " Ajusting Angle: " + adjustedAngle.ToString());
+               // System.Diagnostics.Debug.WriteLine("Matrix: " + matrix.ToString());
             }
         }
 
@@ -329,7 +311,7 @@ namespace WpfApplication1
             {
                 if ((sender as GifImage).Name == "map")
                 {
-                    Widget wdgt = new MapWidget(canvas, LayoutRoot, e);
+                    Widget wdgt = new MapWidget(canvas,LayoutRoot, e);
                 }
                 else if ((sender as GifImage).Name == "transit")
                 {
@@ -341,7 +323,7 @@ namespace WpfApplication1
                 }
                 else if ((sender as GifImage).Name == "dining")
                 {
-                    Widget wdgt = new DiningWidget(canvas, LayoutRoot, e);
+                    Widget wdgt = new DiningWidget(canvas,LayoutRoot, e);
                 }
                 else
                 {
@@ -504,16 +486,16 @@ namespace WpfApplication1
 
         private void rootImage_TouchUp(object sender, TouchEventArgs e)
         {
-            //GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
+             //GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
 
-            //if(lastPosition.ContainsKey(e.TouchDevice.Id))
+            //if (lastPosition.ContainsKey(e.TouchDevice.Id))
             //    lastPosition.Remove(e.TouchDevice.Id);
         }
 
         void AttractMode()
         {
             TimeSpan AttractModeRunningTime = GlobalVariables.TotalTime.Subtract(GlobalVariables.lastTouchTime);
-            TimeSpan AttractModeStartTime = new TimeSpan(0,0,90);
+            TimeSpan AttractModeStartTime = new TimeSpan(0,0,10);
             #region Activate/Deactivate Attract Mode
             if (AttractModeRunningTime < AttractModeStartTime)
             {
@@ -844,26 +826,9 @@ namespace WpfApplication1
             video.Stop();
         }
 
-        private void getWeather(Object sender, EventArgs args)
+        private void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
 
-            WebView webView = WebCore.CreateWebView(300, 700);
-            webView.LoadURL("http://theshinyspoonpay.appspot.com");
-            webView.LoadCompleted += OnFinishLoading;
-
-            while (!finishedLoading)
-            {
-                Thread.Sleep(100);
-                WebCore.Update();
-            }
-            Uri uri = new Uri("pack://application:,,,/Images/weatherApp.png");
-            webView.Render().SaveToPNG("../../Images/weatherApp.png", true);
-            finishedLoading = false;
-        }
-
-        protected void OnFinishLoading(object sender, EventArgs e)
-        {
-            finishedLoading = true;
         }
     }
 }

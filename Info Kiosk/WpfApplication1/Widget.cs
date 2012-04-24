@@ -51,8 +51,8 @@ namespace WpfApplication1
             LayoutRoot = g;
             canvas = c;
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
-            window.Height = 300;
-            window.Width = 250;
+            window.Height = GlobalVariables.widgetInitHeight;
+            window.Width = GlobalVariables.widgetInitWidth;
 
             grid.Name = "WidgetGrid";
             window.Children.Add(grid);
@@ -61,11 +61,12 @@ namespace WpfApplication1
             window.Background = new SolidColorBrush(maroon);
 
             double yCoordinate = LayoutRoot.ActualHeight / 2 - e.GetTouchPoint(canvas).Position.Y;
-            double xCoordinate = e.GetTouchPoint(canvas).Position.X - LayoutRoot.ActualWidth / 2;
+            double xCoordinate = e.GetTouchPoint(canvas).Position.X + - LayoutRoot.ActualWidth / 2;
 
-            System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(GlobalVariables.widgetInitScale, 0, 0, GlobalVariables.widgetInitScale, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+            System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(GlobalVariables.widgetInitScale, 0, 0, GlobalVariables.widgetInitScale, e.GetTouchPoint(canvas).Position.X - GlobalVariables.widgetInitWidth * GlobalVariables.widgetInitScale / 2, e.GetTouchPoint(canvas).Position.Y);
 
             matrix.RotateAt(CalculateRotationAngle(xCoordinate, yCoordinate), e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
+           // matrix.Translate((- GlobalVariables.widgetInitWidth * GlobalVariables.widgetInitScale / 2), 0);
             window.RenderTransform = new MatrixTransform(matrix);
 
             //window.Background = System.Windows.Media.Brushes.LightSlateGray;
