@@ -24,6 +24,8 @@ namespace WpfApplication1
         public static ContentBuilder contentBuilder = new ContentBuilder();
         public static ServiceContainer serviceContainer = new ServiceContainer();
         public static double widgetInitScale = 1.5;
+        public static double widgetInitWidth = 250;
+        public static double widgetInitHeight = 300;
         public static UIElement last;
         public static int count;
         public static Dictionary<object, DispatcherTimer> timerList = new Dictionary<object, DispatcherTimer>();
