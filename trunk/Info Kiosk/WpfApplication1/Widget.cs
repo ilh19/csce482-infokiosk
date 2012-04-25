@@ -25,61 +25,53 @@ using System.Windows.Threading;
 using System.Threading;
 
 
+
 namespace WpfApplication1
 {
     class Widget
     {
-        protected Grid LayoutRoot;
-        protected WrapPanel window = new WrapPanel();
-        //protected SurfaceScrollViewer scroller = new SurfaceScrollViewer();
-        protected ScrollViewer scroller = new ScrollViewer();
-        protected Grid contentGrid;
-        protected StackPanel instructions = new StackPanel();
-        protected DispatcherTimer newTimer = new DispatcherTimer();
         protected Canvas canvas;
-       
-        protected Grid grid = new Grid();
-        UIElement last;
-        protected System.Windows.Shapes.Rectangle appTab =new System.Windows.Shapes.Rectangle();
+        protected Grid LayoutRoot;
 
+        protected WrapPanel window = new WrapPanel();
+        protected Grid grid = new Grid();
+        protected ScrollViewer scroller = new ScrollViewer();
+        protected StackPanel instructions = new StackPanel();
+
+        protected DispatcherTimer newTimer = new DispatcherTimer();
+        private UIElement last;
+        protected System.Windows.Shapes.Rectangle appTab =new System.Windows.Shapes.Rectangle();
         private int touchesOnTopPanel = 0;
         private int touchesOnWindow = 0;
 
 
-        public Widget(Canvas c, Grid g, System.Windows.Input.TouchEventArgs e)
+        public Widget(Canvas cvs, Grid layoutRoot, System.Windows.Input.TouchEventArgs e)
         {
-            LayoutRoot = g;
-            canvas = c;
+            LayoutRoot = layoutRoot;
+            canvas = cvs;
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
             window.Height = GlobalVariables.widgetInitHeight;
             window.Width = GlobalVariables.widgetInitWidth;
 
-            grid.Name = "WidgetGrid";
-            window.Children.Add(grid);
-
             System.Windows.Media.Color maroon = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#2E0000");
             window.Background = new SolidColorBrush(maroon);
 
+            grid.Name = "WidgetGrid";
+            
+            //set orientation of window according to drag position
             double yCoordinate = LayoutRoot.ActualHeight / 2 - e.GetTouchPoint(canvas).Position.Y;
             double xCoordinate = e.GetTouchPoint(canvas).Position.X + - LayoutRoot.ActualWidth / 2;
-
             System.Windows.Media.Matrix matrix = new System.Windows.Media.Matrix(GlobalVariables.widgetInitScale, 0, 0, GlobalVariables.widgetInitScale, e.GetTouchPoint(canvas).Position.X - GlobalVariables.widgetInitWidth * GlobalVariables.widgetInitScale / 2, e.GetTouchPoint(canvas).Position.Y);
-
             matrix.RotateAt(CalculateRotationAngle(xCoordinate, yCoordinate), e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
            // matrix.Translate((- GlobalVariables.widgetInitWidth * GlobalVariables.widgetInitScale / 2), 0);
             window.RenderTransform = new MatrixTransform(matrix);
 
-            //window.Background = System.Windows.Media.Brushes.LightSlateGray;
-            //window.RenderTransform = new MatrixTransform(1.2, 0.5, -0.5, 1.2, e.GetTouchPoint(canvas).Position.X, e.GetTouchPoint(canvas).Position.Y);
-            //window.AddHandler(WrapPanel.ManipulationDeltaEvent, new EventHandler<ManipulationDeltaEventArgs>(window_ManipulationDelta), true);//("circle_ManipulationDelta");
             window.ManipulationDelta += window_ManipulationDelta;
-            window.AddHandler(WrapPanel.ManipulationStartingEvent, new EventHandler<ManipulationStartingEventArgs>(window_ManipulationStarting), true);
+            window.ManipulationStarting += window_ManipulationStarting;
             window.AddHandler(WrapPanel.TouchDownEvent, new EventHandler<TouchEventArgs>(window_TouchDown), true);
             window.AddHandler(WrapPanel.TouchUpEvent, new EventHandler<TouchEventArgs>(window_TouchUp), true);
             window.AddHandler(WrapPanel.TouchLeaveEvent, new EventHandler<TouchEventArgs>(window_TouchLeave), true);
             window.AddHandler(WrapPanel.ManipulationInertiaStartingEvent, new EventHandler<ManipulationInertiaStartingEventArgs>(window_ManipulationInertiaStarting), true);
-
-            canvas.Children.Add(window);
 
             //Manipulation border
             DockPanel topTab = new DockPanel();
@@ -90,20 +82,18 @@ namespace WpfApplication1
             topTab.VerticalAlignment = VerticalAlignment.Top;
             topTab.Margin = new Thickness(0);
             topTab.Background = new SolidColorBrush(maroon);
+            topTab.HorizontalAlignment = HorizontalAlignment.Stretch;
 
             //app icon
-            //System.Windows.Shapes.Rectangle appTab = new System.Windows.Shapes.Rectangle();
-            appTab.Name = "AppTab";
-            //ImageBrush appIcon = new ImageBrush();    
+            appTab.Name = "AppTab";   
             appTab.IsManipulationEnabled = false;
             appTab.Height = 30;
             appTab.Width = 30;
-            //appTab.Fill = appIcon;
             appTab.HorizontalAlignment = HorizontalAlignment.Left;
             appTab.VerticalAlignment = VerticalAlignment.Center;
             topTab.Children.Add(appTab);
 
-            // Spacer
+            //Spacer
             System.Windows.Shapes.Rectangle spacer = new System.Windows.Shapes.Rectangle();
             spacer.Height = 30;
             spacer.Width = 10;
@@ -138,17 +128,7 @@ namespace WpfApplication1
             closeTab.VerticalAlignment = VerticalAlignment.Center;
             topTab.Children.Add(closeTab);
 
-            grid.Children.Add(topTab);
-
-            //Timer
-            newTimer.Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
-            newTimer.Tick += new EventHandler(onElapsedTimer);
-            newTimer.Tag = window;
-            newTimer.Start();
-            GlobalVariables.timerList[window] = newTimer;
-
             // Instructions Panel
-            
             instructions.Name = "InstructionsPanel";
             instructions.RenderTransform = new MatrixTransform(1, 0, 0, 1, 0, 0);
             instructions.Margin = new Thickness(0, 30, 0, 0);
@@ -166,10 +146,32 @@ namespace WpfApplication1
                     new Uri("pack://application:,,,/Images/handGestures.png")
                 );
             gesturesRect.Fill = gestures;
-            instructions.Visibility = Visibility.Collapsed;
+            instructions.Visibility = Visibility.Hidden;
             instructions.Background = new SolidColorBrush(Colors.LightGray) { Opacity = 0.5 };
             instructions.Children.Add(gesturesRect);
-           
+
+            window.Children.Add(grid);
+            canvas.Children.Add(window);
+            grid.Children.Add(topTab);
+
+            //Timer
+            newTimer.Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
+            newTimer.Tick += new EventHandler(onElapsedTimer);
+            newTimer.Tag = window;
+            newTimer.Start();
+            GlobalVariables.timerList[window] = newTimer;
+
+            //scroller settings
+            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
+            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+            scroller.VerticalAlignment = VerticalAlignment.Top;
+            scroller.HorizontalAlignment = HorizontalAlignment.Left;
+            scroller.VerticalContentAlignment = VerticalAlignment.Stretch;
+            scroller.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            scroller.Margin = new Thickness(0, 30, 0, 0);
+            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
+            grid.ClipToBounds = true;
         }
 
         /*
@@ -213,7 +215,6 @@ namespace WpfApplication1
 
             for (int i = 0; i < children.Count; i++)
             {
-
                 //Display instructions
                 if (children[i] is StackPanel && (children[i] as StackPanel).Name == "InstructionsPanel")
                 {
@@ -273,7 +274,7 @@ namespace WpfApplication1
                             {
                                 if (gridChildren[j] is StackPanel && (gridChildren[j] as StackPanel).Name == "InstructionsPanel")
                                 {
-                                    (gridChildren[j] as StackPanel).Visibility = Visibility.Collapsed;
+                                    (gridChildren[j] as StackPanel).Visibility = Visibility.Hidden;
                                     (element as WrapPanel).IsManipulationEnabled = false;
                                     touchesOnTopPanel = 0;
                                     touchesOnWindow = 0;

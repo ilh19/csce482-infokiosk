@@ -311,23 +311,23 @@ namespace WpfApplication1
             {
                 if ((sender as GifImage).Name == "map")
                 {
-                    Widget wdgt = new MapWidget(canvas,LayoutRoot, e);
+                    Widget wdgt = new WidgetMap(canvas, LayoutRoot, e);
                 }
                 else if ((sender as GifImage).Name == "transit")
                 {
-                    Widget wdgt = new TransitWidget(canvas, LayoutRoot, e);
+                    Widget wdgt = new WidgetTransit(canvas, LayoutRoot, e);
                 }
                 else if ((sender as GifImage).Name == "weather")
                 {
-                    Widget wdgt = new WeatherWidget(canvas, LayoutRoot, e);
+                    Widget wdgt = new WidgetWeather(canvas, LayoutRoot, e);
                 }
                 else if ((sender as GifImage).Name == "dining")
                 {
-                    Widget wdgt = new DiningWidget(canvas,LayoutRoot, e);
+                    Widget wdgt = new WidgetDining(canvas, LayoutRoot, e);
                 }
                 else
                 {
-                    Widget wdgt = new TransitWidget(canvas, LayoutRoot, e);
+                    Widget wdgt = new WidgetTransit(canvas, LayoutRoot, e);
                 }
 
             }
