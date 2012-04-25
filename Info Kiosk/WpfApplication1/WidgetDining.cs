@@ -24,17 +24,16 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using System.Threading;
 
-
 namespace WpfApplication1
 {
-    class DiningWidget : Widget
+    class WidgetDining : Widget
     {
         //warning, the code below is ugly
 
         TabControl location = new TabControl();
         int touchCount = 0;
 
-        public DiningWidget(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
+        public WidgetDining(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
             : base(c,g,e)
         {
             ImageBrush appIcon = new ImageBrush();
@@ -49,15 +48,8 @@ namespace WpfApplication1
             StackPanel listWest = new StackPanel();
             StackPanel listCentral = new StackPanel();
 
-            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalAlignment = VerticalAlignment.Bottom;
-            scroller.Margin = new Thickness(0, 30, 0, 0);
             scroller.PanningMode = PanningMode.VerticalOnly;
-            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
-            scroller.ClipToBounds = true;
 
-            //list.Height = 270;
             window.Background = new SolidColorBrush(Colors.White);
 
             //Adding tabs
@@ -153,12 +145,6 @@ namespace WpfApplication1
                 if (item.Button != null)
                 {
                     item.Button.TouchDown += new EventHandler<TouchEventArgs>(mapIt_TouchDown);
-                    //item.Button.BackButton.TouchDown += new EventHandler<TouchEventArgs>(backbButton_TouchDown);
-                    //item.Button.Image.IsManipulationEnabled = true;
-                    //item.Button.Image.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(map_ManipulationStarting);
-                   // item.Button.Image.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(map_ManipulationDelta);
-
-
                 }
             }
             foreach (DiningItem item in listCentral.Children)
@@ -166,7 +152,6 @@ namespace WpfApplication1
                 if (item.Button != null)
                 {
                     item.Button.TouchDown += new EventHandler<TouchEventArgs>(mapIt_TouchDown);
-                    //item.Button.BackButton.TouchDown += new EventHandler<TouchEventArgs>(backbButton_TouchDown);
                 }
             }
             foreach (DiningItem item in listSouth.Children)
@@ -174,7 +159,6 @@ namespace WpfApplication1
                 if (item.Button != null)
                 {
                     item.Button.TouchDown += new EventHandler<TouchEventArgs>(mapIt_TouchDown);
-                    //item.Button.BackButton.TouchDown += new EventHandler<TouchEventArgs>(backbButton_TouchDown);
                 }
             }
             foreach (DiningItem item in listWest.Children)
@@ -182,10 +166,8 @@ namespace WpfApplication1
                 if (item.Button != null)
                 {
                     item.Button.TouchDown += new EventHandler<TouchEventArgs>(mapIt_TouchDown);
-                    //item.Button.BackButton.TouchDown += new EventHandler<TouchEventArgs>(backbButton_TouchDown);
                 }
             }
-
             scroller.Content = location;
             grid.Children.Add(scroller);
             grid.Children.Add(instructions);
@@ -193,18 +175,16 @@ namespace WpfApplication1
 
         public void mapIt_TouchDown(object sender, TouchEventArgs e)
         {
+            scroller.Content = (sender as ButtonMapIt).Image;
             scroller.TouchDown += new EventHandler<TouchEventArgs>(img_TouchDown);
             scroller.TouchUp += new EventHandler<TouchEventArgs>(img_TouchUp);
-
-            scroller.Content = (sender as MapItButton).Image;
-
-            scroller.ScrollToHorizontalOffset((sender as MapItButton).X-75);
-            scroller.ScrollToVerticalOffset((sender as MapItButton).Y-150);
+            
+            scroller.ScrollToHorizontalOffset((sender as ButtonMapIt).X*0.3-75);
+            scroller.ScrollToVerticalOffset((sender as ButtonMapIt).Y*0.3-150);
 
             scroller.PanningMode = PanningMode.None;
             scroller.IsManipulationEnabled = true;
-            (sender as MapItButton).Image.IsManipulationEnabled = true;
-            //grid.Children.Add((sender as MapItButton).BackButton);
+            (sender as ButtonMapIt).Image.IsManipulationEnabled = true;
         }
 
         void backbButton_TouchDown(object sender, TouchEventArgs e)
@@ -216,7 +196,6 @@ namespace WpfApplication1
 
         void img_TouchDown(object sender, TouchEventArgs e)
         {
-            //int touchCount = (sender as Image).TouchesOver.Count();
             if (scroller.Content is Image)
             {
                 touchCount++;
@@ -229,7 +208,6 @@ namespace WpfApplication1
                 }
                 else
                 {
-
                     foreach (TouchDevice device in scroller.TouchesOver)
                     {
                         scroller.ReleaseTouchCapture(device);
@@ -238,7 +216,6 @@ namespace WpfApplication1
                     scroller.PanningMode = PanningMode.None;
                     (scroller.Content as Image).IsManipulationEnabled = true;
                 }
-                //StartTimeout();
                 e.Handled = true;
             }
         }
@@ -247,7 +224,6 @@ namespace WpfApplication1
         {
             if (scroller.Content is Image)
             {
-                //touchCount = (sender as Image).TouchesDirectlyOver.Count()-1;
                 if (touchCount > 0)
                     touchCount--;
                 if (touchCount == 0)
@@ -256,7 +232,6 @@ namespace WpfApplication1
                 scroller.PanningMode = PanningMode.Both;
                 e.Handled = true;
             }
-
         }
 
         private void map_ManipulationStarting(object sender, System.Windows.Input.ManipulationStartingEventArgs e)
@@ -270,20 +245,26 @@ namespace WpfApplication1
             var element = e.Source as FrameworkElement;
             if (element != null)
             {
-
                 var deltaManipulation = e.DeltaManipulation;
                 var matrix = ((MatrixTransform)element.LayoutTransform).Matrix;
                 System.Windows.Point center = new System.Windows.Point(element.ActualWidth / 2, element.ActualHeight / 2);
                 center = matrix.Transform(center);
 
                 //Zoom. 
-                matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
+                var width = element.ActualWidth * deltaManipulation.Scale.X * matrix.M11;
+                var height = element.ActualHeight * deltaManipulation.Scale.Y * matrix.M22;
 
-                //matrix.Translate(e.DeltaManipulation.Translation.X, e.DeltaManipulation.Translation.Y);
-
+                double maxWidth = element.ActualWidth + 2000;
+                double minWidth = element.ActualWidth - 700;
+                double maxHeight = element.ActualHeight + 2000;
+                double minHeight = element.ActualHeight - 700;
+                //
+                if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight)
+                {
+                    matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
+                }
                 element.LayoutTransform = new MatrixTransform(matrix);
                 e.Handled = true;
-               // System.Diagnostics.Debug.WriteLine("Matrix: " + matrix.ToString());
             }
         }
 

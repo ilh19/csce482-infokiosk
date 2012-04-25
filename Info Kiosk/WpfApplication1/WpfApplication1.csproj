@@ -49,6 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\Awesomium.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="DeepZoom">
+      <HintPath>references\DeepZoom.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Conversion.v4.0" />
     <Reference Include="Microsoft.Build.Engine" />
@@ -141,6 +144,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ZoomableCanvas">
+      <HintPath>references\ZoomableCanvas.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -151,6 +157,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AlignableWrapPanel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -158,19 +165,19 @@
     <Compile Include="Class1.cs" />
     <Compile Include="ContentBuilder.cs" />
     <Compile Include="DiningItem.cs" />
-    <Compile Include="DiningWidget.cs" />
+    <Compile Include="WidgetDining.cs" />
     <Compile Include="ErrorLogger.cs" />
-    <Compile Include="MapItButton.cs" />
-    <Compile Include="MapWidget.cs" />
+    <Compile Include="ButtonMapIt.cs" />
+    <Compile Include="WidgetMap.cs" />
     <Compile Include="ParticleEmitter.cs" />
     <Compile Include="Page1.xaml.cs">
       <DependentUpon>Page1.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RouteButton.cs" />
+    <Compile Include="ButtonRoute.cs" />
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="GraphicsDeviceService.cs" />
-    <Compile Include="TransitWidget.cs" />
-    <Compile Include="WeatherWidget.cs" />
+    <Compile Include="WidgetTransit.cs" />
+    <Compile Include="WidgetWeather.cs" />
     <Compile Include="Widget.cs" />
     <Compile Include="XnaImageSource.cs" />
     <Compile Include="DisableTouchConversionToMouse.cs" />

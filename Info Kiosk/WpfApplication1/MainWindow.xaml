@@ -4,6 +4,7 @@
     xmlns:s="http://schemas.microsoft.com/surface/2008"
     xmlns:awe="http://schemas.awesomium.com/winfx"
     xmlns:local="clr-namespace:WpfApplication1"
+    xmlns:dz="clr-namespace:DeepZoom.Controls;assembly=DeepZoom"
 	x:Class="WpfApplication1.MainWindow"
 	x:Name="Window"
 	Title="MainWindow"
@@ -108,7 +109,9 @@
                           HorizontalAlignment="Center" 
                           VerticalAlignment="Top"
                           MediaEnded="video_MediaEnded" />
-
+    
         </Canvas>
+        <dz:MultiScaleImage x:Name="mapTest" Source="C:\test\maptest\GeneratedImages\dzc_output.xml" Visibility="Collapsed" />
     </Grid>
+
 </Window>

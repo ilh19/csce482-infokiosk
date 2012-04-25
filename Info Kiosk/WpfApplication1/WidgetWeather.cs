@@ -27,10 +27,10 @@ using System.Threading;
 
 namespace WpfApplication1
 {
-    class WeatherWidget : Widget
+    class WidgetWeather : Widget
     {
 
-        public WeatherWidget(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
+        public WidgetWeather(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
             : base(c, g, e)
         {
             ImageBrush appIcon = new ImageBrush();
@@ -38,19 +38,6 @@ namespace WpfApplication1
                 new Uri("pack://application:,,,/Images/weather.gif")
             );
             appTab.Fill = appIcon;
-
-            //webView = WebCore.CreateWebView(300, 700);
-            //webView.LoadURL("http://theshinyspoonpay.appspot.com");
-            //webView.LoadCompleted += OnFinishLoading;
-            //
-            //while (!finishedLoading)
-            //{
-            //    Thread.Sleep(100);
-            //    WebCore.Update();
-            //}
-            //
-            //System.Drawing.Bitmap bmap = new System.Drawing.Bitmap(300, 700);
-            //webView.Render().DrawBuffer(ref bmap);
 
             Image image = new Image();
             //image.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty,
@@ -64,13 +51,7 @@ namespace WpfApplication1
             image.IsManipulationEnabled = false;
             scroller.Content = image;
             
-            scroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
-            scroller.VerticalAlignment = VerticalAlignment.Bottom;
-            scroller.Margin = new Thickness(0, 30, 0, 0);
             scroller.PanningMode = PanningMode.VerticalOnly;
-            scroller.IsManipulationEnabled = false;
-            scroller.ManipulationBoundaryFeedback += ManipulationBoundaryFeedbackHandler;
             grid.Children.Add(scroller);
             grid.Children.Add(instructions);
         }
