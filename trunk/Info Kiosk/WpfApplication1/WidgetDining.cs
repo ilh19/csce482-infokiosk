@@ -32,6 +32,7 @@ namespace WpfApplication1
 
         TabControl location = new TabControl();
         int touchCount = 0;
+        Image mapBackButton = new Image();
 
         public WidgetDining(Canvas c,Grid g, System.Windows.Input.TouchEventArgs e)
             : base(c,g,e)
@@ -41,7 +42,18 @@ namespace WpfApplication1
                         new Uri("pack://application:,,,/Images/dining.gif")
             );
             appTab.Fill = appIcon;
-            appTab.AddHandler(System.Windows.Shapes.Rectangle.TouchDownEvent, new EventHandler<TouchEventArgs>(backbButton_TouchDown), true);
+
+            mapBackButton.HorizontalAlignment = HorizontalAlignment.Left;
+            mapBackButton.VerticalAlignment = VerticalAlignment.Top;
+            mapBackButton.Margin = new Thickness(0, 30, 0, 0);
+            mapBackButton.Visibility = Visibility.Collapsed; 
+            mapBackButton.Width = 30;
+            mapBackButton.Height = 30;
+            mapBackButton.Source = new BitmapImage(
+                        new Uri("pack://application:,,,/Images/arrow_back.png"));
+            mapBackButton.AddHandler(Image.TouchDownEvent, new EventHandler<TouchEventArgs>(backbButton_TouchDown), true);
+
+            
 
             StackPanel listNorth = new StackPanel();
             StackPanel listSouth = new StackPanel();
@@ -170,6 +182,7 @@ namespace WpfApplication1
             }
             scroller.Content = location;
             grid.Children.Add(scroller);
+            grid.Children.Add(mapBackButton);
             grid.Children.Add(instructions);
         }
 
@@ -185,6 +198,7 @@ namespace WpfApplication1
             scroller.PanningMode = PanningMode.None;
             scroller.IsManipulationEnabled = true;
             (sender as ButtonMapIt).Image.IsManipulationEnabled = true;
+            mapBackButton.Visibility = Visibility.Visible;
         }
 
         void backbButton_TouchDown(object sender, TouchEventArgs e)
@@ -192,6 +206,7 @@ namespace WpfApplication1
             scroller.Content = location;
             grid.Children.Remove(sender as Button);
             scroller.PanningMode = PanningMode.VerticalOnly;
+            mapBackButton.Visibility = Visibility.Collapsed;
         }
 
         void img_TouchDown(object sender, TouchEventArgs e)
