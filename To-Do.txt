@@ -1,12 +1,13 @@
 add attract mode - bruce / vincent 
-limit window max and min size - irma
+limit window max and min size - irma (completed)
 add gifs to widget circles - clarissa (completed)
-add graphics to window close/restore size/handles -irma
-do not resize window controls with window - irma
-add border to window - chandler
+add graphics to window close/restore size/handles -irma (completed)
+do not resize window controls with window - irma (completed)
 window close itself after timeout - clarissa (completed)
 max number of windows - clarissa (completed)
+
 apps - chandler
+add border to window - chandler 
 
 
 
@@ -19,32 +20,35 @@ apps - chandler
 
 
 later...
-
-multi-touch in awesomium
-Implement restore to default size
 default webcontrol to larger size, so resize looks better +
 
 
-
 Attract Mode
-Window Title Bars (and all functionality: rotation, resize etc) remove handles
-multiple users 
-map app needs more routes
+DONE - Window Title Bars (and all functionality: rotation, resize etc) remove handles
+DONE - multiple users 
+DONE - map app needs more routes
 
 
 
-DONE add map image
-DONE SORTA finish dining (need to work on zooming at center of touch)
-take weather picture every hour
+DONE - add map image
+DONE - finish dining
+DONE - take weather picture every hour
 DONE - take glare off of gif images
 attract mode video
 transit - making buttons not say route, and having real time updates of timings
-making it so you can take off second finger during manipulation
+(fix bug) making it so you can take off second finger during manipulation
 DONE - better gesture images
 DONE - changing touch particles
 
-user study
+user study/final paper
 video
+final presentation 
+
+GRADUATE whoop
+
+PARTY :D
+
+WORK :(
 
 
 
