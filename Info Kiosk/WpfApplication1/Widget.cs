@@ -242,7 +242,7 @@ namespace WpfApplication1
             GlobalVariables.lastTouchTime = GlobalVariables.TotalTime;
             //reset timer
             GlobalVariables.timerList[sender].Interval = TimeSpan.FromMilliseconds(Constants.closeInterval);
-            touchesOnWindow++;
+            if(instructions.Visibility == Visibility.Visible) touchesOnWindow++;
         }
 
         /*
@@ -351,6 +351,8 @@ namespace WpfApplication1
                 //e.DeltaManipulation has the changes 
                 // Scale is a delta multiplier; 1.0 is last size,  (so 1.1 == scale 10%, 0.8 = shrink 20%) 
                 // Rotate = Rotation, in degrees
+
+
                 // Pan = Translation, == Translate offset, in Device Independent Pixels 
 
 
@@ -366,6 +368,19 @@ namespace WpfApplication1
                 // M22: height
                 var width = element.ActualWidth * deltaManipulation.Scale.X * matrix.M11;
                 var height = element.ActualHeight * deltaManipulation.Scale.Y * matrix.M22;
+                var m11 = matrix.M11;
+                if (matrix.M11 < 0.3 && matrix.M11 > -0.3)
+                {
+                    width = element.ActualWidth * deltaManipulation.Scale.X * (matrix.M11 + GlobalVariables.widgetInitScale);
+                    height = element.ActualHeight * deltaManipulation.Scale.Y * (matrix.M22 + GlobalVariables.widgetInitScale);
+                }
+                if (matrix.M11 > GlobalVariables.widgetInitScale)
+                {
+                    width = element.ActualWidth * deltaManipulation.Scale.X * (matrix.M11 - GlobalVariables.widgetInitScale);
+                    height = element.ActualHeight * deltaManipulation.Scale.Y * (matrix.M22 - GlobalVariables.widgetInitScale);
+                }
+                if ((Math.Atan(matrix.M12 / matrix.M11) * 180 / Math.PI) == 90) width *= 10E17;
+                if ((Math.Atan(matrix.M12 / matrix.M11) * 180 / Math.PI) == 270) width *= 10E17;
 
                 // widget has been rotated >180 degrees
                 if (width < 0) width *= -1;
@@ -376,6 +391,7 @@ namespace WpfApplication1
                 double maxHeight = element.ActualHeight + 250;
                 double minHeight = element.ActualHeight - 50;
 
+                System.Diagnostics.Debug.WriteLine("Manipulation matrix: " + matrix.ToString());         
                 // maximum and minimum height and width. Only scale if it's within these values
                 if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight)
                 {
